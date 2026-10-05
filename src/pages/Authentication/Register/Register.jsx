@@ -21,6 +21,13 @@ const Register = () => {
         console.log(error);
       });
   };
+
+  const handleImageUpload = e =>{
+    const image = e.target.files[0];
+    console.log(image);
+    const formData = new FormData();
+    formData.append('image', image);
+  }
   return (
     <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
       <div className="card-body">
@@ -28,6 +35,28 @@ const Register = () => {
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <fieldset className="fieldset">
+
+            {/* Name field */}
+            <label className="label">Your Name</label>
+            <input
+              type="text"
+              {...register("name", { required: true })}
+              className="input"
+              placeholder="Your Name"
+            />
+            {errors.email?.type === "required" && (
+              <p className="text-red-500">Name is required</p>
+            )}
+            {/* Name field */}
+            <label className="label">Your Name</label>
+            <input
+              type="file"
+              onChange={handleImageUpload}
+              className="input"
+              placeholder="Your Profile Picture"
+            />
+            
+
             {/* email field */}
             <label className="label">Email</label>
             <input
@@ -36,6 +65,9 @@ const Register = () => {
               className="input"
               placeholder="Email"
             />
+            {errors.email?.type === "required" && (
+              <p className="text-red-500">password is required</p>
+            )}
 
             {/* password field */}
             <label className="label">Password</label>
@@ -45,12 +77,7 @@ const Register = () => {
               className="input"
               placeholder="Password"
             />
-
             {errors.password?.type === "required" && (
-              <p className="text-red-500">password is required</p>
-            )}
-
-            {errors.password?.type === "minLength" && (
               <p className="text-red-500">
                 password must be 6 characters or longer
               </p>

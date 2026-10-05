@@ -1,5 +1,12 @@
 import { NavLink, Outlet } from "react-router";
 import ProFastLogo from "../pages/shared/ProFastLogo/ProFastLogo";
+import {
+  LuHouse,
+  LuPackage,
+  LuCreditCard,
+  LuMapPin,
+  LuUserRoundPen,
+} from "react-icons/lu";
 
 const DashboardLayout = () => {
   return (
@@ -45,10 +52,47 @@ const DashboardLayout = () => {
           {/* Sidebar content here */}
           <ProFastLogo></ProFastLogo>
           <li>
-            <a>Home</a>
+            <NavLink to="/" className="flex items-center gap-3">
+              <LuHouse size={20} />
+              <span>Home</span>
+            </NavLink>
           </li>
+
           <li>
-           <NavLink to="/dashboard/myParcels">My Parcels</NavLink>
+            <NavLink
+              to="/dashboard/myParcels"
+              className="flex items-center gap-3"
+            >
+              <LuPackage size={20} />
+              <span>My Parcels</span>
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/dashboard/paymentHistory"
+              className="flex items-center gap-3"
+            >
+              <LuCreditCard size={20} />
+              <span>Payment History</span>
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to="/dashboard/track" className="flex items-center gap-3">
+              <LuMapPin size={20} />
+              <span>Track Package</span>
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/dashboard/profile"
+              className="flex items-center gap-3"
+            >
+              <LuUserRoundPen size={20} />
+              <span>Update Profile</span>
+            </NavLink>
           </li>
         </ul>
       </div>

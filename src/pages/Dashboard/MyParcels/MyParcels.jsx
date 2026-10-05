@@ -1,12 +1,15 @@
+
 import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import { FaCreditCard, FaEye, FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router";
 
 const MyParcels = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate();
+
   const { data: parcels = [], refetch } = useQuery({
     queryKey: ["my-parcels", user.email],
     queryFn: async () => {
@@ -17,12 +20,14 @@ const MyParcels = () => {
 
   console.log(parcels);
 
-  const handleView = (parcel) => {
-    console.log("View parcel:", parcel);
+  const handleView = (id) => {
+    console.log("View parcel ID:", id);
   };
 
-  const handlePay = (parcel) => {
-    console.log("Pay parcel:", parcel);
+  const handlePay = (id) => {
+    console.log("Pay parcel ID:", id);
+
+    navigate(`/dashboard/payment/${id}`)
   };
 
   const handleDelete = (id) => {
@@ -37,7 +42,9 @@ const MyParcels = () => {
       if (result.isConfirmed) {
         try {
           const res = await axiosSecure.delete(`/parcels/${id}`);
-          console.log(res.data)
+
+          console.log(res.data);
+
           if (res.data.deletedCount > 0) {
             Swal.fire({
               title: "Deleted!",
@@ -47,7 +54,6 @@ const MyParcels = () => {
               showConfirmButton: false,
             });
 
-            // parcels state update
             refetch();
           }
         } catch (error) {
@@ -84,11 +90,15 @@ const MyParcels = () => {
               {/* Serial */}
               <th>{index + 1}</th>
 
+              {/* Parcel */}
               <td>
                 <p className="font-semibold">{parcel.parcelName}</p>
-                <p className="text-xs text-gray-500">{parcel.trackingId}</p>
+                <p className="text-xs text-gray-500">
+                  {parcel.trackingId}
+                </p>
               </td>
 
+              {/* Type */}
               <td className="capitalize">{parcel.parcelType}</td>
 
               {/* Date + Time */}
@@ -103,8 +113,12 @@ const MyParcels = () => {
                 })}
               </td>
 
-              <td className="font-semibold">{parcel.deliveryCost} TK</td>
+              {/* Cost */}
+              <td className="font-semibold">
+                {parcel.deliveryCost} TK
+              </td>
 
+              {/* Payment */}
               <td>
                 <span
                   className={`badge ${
@@ -117,32 +131,36 @@ const MyParcels = () => {
                 </span>
               </td>
 
+              {/* Actions */}
               <td>
                 <div className="flex gap-2">
+                  {/* View */}
                   <button
-                    onClick={() => handleView(parcel)}
+                    onClick={() => handleView(parcel._id)}
                     className="btn btn-sm btn-info btn-outline"
                     title="View Details"
                   >
-                    <FaEye />
+                    View
                   </button>
 
+                  {/* Pay */}
                   {parcel.payment_status === "unpaid" && (
                     <button
-                      onClick={() => handlePay(parcel)}
-                      className="btn btn-sm btn-success btn-outline"
+                      onClick={() => handlePay(parcel._id)}
+                      className="btn btn-sm bg-[#00BF83] hover:bg-[#009B6B] text-white"
                       title="Pay Now"
                     >
-                      <FaCreditCard />
+                      Pay
                     </button>
                   )}
 
+                  {/* Delete */}
                   <button
                     onClick={() => handleDelete(parcel._id)}
                     className="btn btn-sm btn-error btn-outline"
                     title="Delete"
                   >
-                    <FaTrash />
+                    Delete
                   </button>
                 </div>
               </td>
