@@ -8,9 +8,14 @@ import {
   LuUserRoundPen,
   LuBike,
   LuClock3,
+  LuUserCog,
 } from "react-icons/lu";
+import useUserRole from "../hooks/useUserRole";
 
 const DashboardLayout = () => {
+  const { role, isLoading } = useUserRole();
+  console.log("role:", role);
+
   return (
     <div className="drawer lg:drawer-open">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
@@ -96,25 +101,41 @@ const DashboardLayout = () => {
               <span>Update Profile</span>
             </NavLink>
           </li>
-          <li>
-            <NavLink
-              to="/dashboard/activeRiders"
-              className="flex items-center gap-3"
-            >
-              <LuBike size={20} />
-              <span>Active Riders</span>
-            </NavLink>
-          </li>
 
-          <li>
-            <NavLink
-              to="/dashboard/pendingRiders"
-              className="flex items-center gap-3"
-            >
-              <LuClock3 size={20} />
-              <span>Pending Riders</span>
-            </NavLink>
-          </li>
+          { !isLoading && role == 'admin' &&
+
+            <>
+              <li>
+                <NavLink
+                  to="/dashboard/activeRiders"
+                  className="flex items-center gap-3"
+                >
+                  <LuBike size={20} />
+                  <span>Active Riders</span>
+                </NavLink>
+              </li>
+
+              <li>
+                <NavLink
+                  to="/dashboard/pendingRiders"
+                  className="flex items-center gap-3"
+                >
+                  <LuClock3 size={20} />
+                  <span>Pending Riders</span>
+                </NavLink>
+              </li>
+
+              <li>
+                <NavLink
+                  to="/dashboard/makeAdmin"
+                  className="flex items-center gap-3"
+                >
+                  <LuUserCog size={20} />
+                  <span>Make Admin</span>
+                </NavLink>
+              </li>
+            </>
+          }
         </ul>
       </div>
     </div>
