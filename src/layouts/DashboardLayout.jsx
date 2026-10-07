@@ -6,6 +6,8 @@ import {
   LuCreditCard,
   LuMapPin,
   LuUserRoundPen,
+  LuBike,
+  LuClock3,
 } from "react-icons/lu";
 
 const DashboardLayout = () => {
@@ -92,6 +94,25 @@ const DashboardLayout = () => {
             >
               <LuUserRoundPen size={20} />
               <span>Update Profile</span>
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/dashboard/activeRiders"
+              className="flex items-center gap-3"
+            >
+              <LuBike size={20} />
+              <span>Active Riders</span>
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/dashboard/pendingRiders"
+              className="flex items-center gap-3"
+            >
+              <LuClock3 size={20} />
+              <span>Pending Riders</span>
             </NavLink>
           </li>
         </ul>
