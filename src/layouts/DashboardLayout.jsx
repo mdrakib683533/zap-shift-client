@@ -9,6 +9,7 @@ import {
   LuBike,
   LuClock3,
   LuUserCog,
+  LuUserCheck,
 } from "react-icons/lu";
 import useUserRole from "../hooks/useUserRole";
 
@@ -102,9 +103,17 @@ const DashboardLayout = () => {
             </NavLink>
           </li>
 
-          { !isLoading && role == 'admin' &&
-
+          {!isLoading && role == "admin" && (
             <>
+              <li>
+                <NavLink
+                  to="/dashboard/assignRider"
+                  className="flex items-center gap-3"
+                >
+                  <LuUserCheck size={20} />
+                  <span>Assign Rider</span>
+                </NavLink>
+              </li>
               <li>
                 <NavLink
                   to="/dashboard/activeRiders"
@@ -135,7 +144,7 @@ const DashboardLayout = () => {
                 </NavLink>
               </li>
             </>
-          }
+          )}
         </ul>
       </div>
     </div>
