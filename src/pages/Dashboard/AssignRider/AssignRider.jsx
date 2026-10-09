@@ -156,7 +156,10 @@ const AssignRider = () => {
                   {/* Created At */}
                   <td>
                     <span className="text-sm text-gray-500">
-                      {new Date(parcel.createdAt).toLocaleDateString()}
+                      {new Date(parcel.createdAt).toLocaleString("en-BD", {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      })}
                     </span>
                   </td>
 

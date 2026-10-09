@@ -19,6 +19,11 @@ import MakeAdmin from "../pages/Dashboard/MakeAdmin/MakeAdmin";
 import Forbidden from "../pages/Forbidden/Forbidden";
 import AdminRoute from "../routes/AdminRoute";
 import AssignRider from "../pages/Dashboard/AssignRider/AssignRider";
+import RiderRoute from "../routes/RiderRoute";
+import PendingDeliveries from "../pages/Dashboard/PendingDeliveries/PendingDeliveries";
+import CompletedDeliveries from "../pages/Dashboard/CompletedDeliveries/CompletedDeliveries";
+import CashOut from "../pages/Dashboard/CashOut/CashOut";
+import ManageCashouts from "../pages/Dashboard/ManageCashouts/ManageCashouts";
 
 export const router = createBrowserRouter([
   {
@@ -96,21 +101,74 @@ export const router = createBrowserRouter([
         path: "track",
         Component: TrackParcel,
       },
+
+      // rider only routes
       {
-        path: 'assignRider',
-        element: <AdminRoute><AssignRider></AssignRider></AdminRoute>
+        path: "pending-deliveries",
+        element: (
+          <RiderRoute>
+            <PendingDeliveries></PendingDeliveries>
+          </RiderRoute>
+        ),
+      },
+      {
+        path: "completed-deliveries",
+        element: (
+          <RiderRoute>
+            <CompletedDeliveries></CompletedDeliveries>
+          </RiderRoute>
+        ),
+      },
+      {
+        path: "cashout",
+        element: (
+          <RiderRoute>
+            <CashOut></CashOut>
+          </RiderRoute>
+        ),
+      },
+
+      // admin only routes
+      {
+        path: "assignRider",
+        element: (
+          <AdminRoute>
+            <AssignRider></AssignRider>
+          </AdminRoute>
+        ),
       },
       {
         path: "pendingRiders",
-        element: <AdminRoute><PendingRiders></PendingRiders></AdminRoute>
+        element: (
+          <AdminRoute>
+            <PendingRiders></PendingRiders>
+          </AdminRoute>
+        ),
       },
       {
         path: "activeRiders",
-        element: <AdminRoute><ActiveRiders></ActiveRiders></AdminRoute>
+        element: (
+          <AdminRoute>
+            <ActiveRiders></ActiveRiders>
+          </AdminRoute>
+        ),
       },
       {
         path: "makeAdmin",
-        element: <AdminRoute><MakeAdmin></MakeAdmin></AdminRoute>
+        element: (
+          <AdminRoute>
+            <MakeAdmin></MakeAdmin>
+          </AdminRoute>
+        ),
+      },
+
+      {
+        path: "manageCashouts",
+        element: (
+          <AdminRoute>
+            <ManageCashouts />
+          </AdminRoute>
+        ),
       },
     ],
   },

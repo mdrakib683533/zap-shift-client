@@ -10,6 +10,9 @@ import {
   LuClock3,
   LuUserCog,
   LuUserCheck,
+  LuClipboardList,
+  LuCircleCheckBig,
+  LuWallet,
 } from "react-icons/lu";
 import useUserRole from "../hooks/useUserRole";
 
@@ -103,6 +106,41 @@ const DashboardLayout = () => {
             </NavLink>
           </li>
 
+          {/* rider links */}
+          {!isLoading && role === "rider" && (
+            <>
+              <li>
+                <NavLink
+                  to="/dashboard/pending-deliveries"
+                  className="flex items-center gap-3"
+                >
+                  <LuClipboardList size={20} />
+                  <span>Pending Deliveries</span>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/dashboard/completed-deliveries"
+                  className="flex items-center gap-3"
+                >
+                  <LuCircleCheckBig size={20} />
+                  <span>Completed Deliveries</span>
+                </NavLink>
+              </li>
+
+              <li>
+                <NavLink
+                  to="/dashboard/cashout"
+                  className="flex items-center gap-3"
+                >
+                  <LuWallet size={20} />
+                  <span>My Earning</span>
+                </NavLink>
+              </li>
+            </>
+          )}
+
+          {/* admin link */}
           {!isLoading && role == "admin" && (
             <>
               <li>
@@ -141,6 +179,16 @@ const DashboardLayout = () => {
                 >
                   <LuUserCog size={20} />
                   <span>Make Admin</span>
+                </NavLink>
+              </li>
+
+              <li>
+                <NavLink
+                  to="/dashboard/manageCashouts"
+                  className="flex items-center gap-3"
+                >
+                  <LuWallet size={20} />
+                  <span>Cash Out Management</span>
                 </NavLink>
               </li>
             </>

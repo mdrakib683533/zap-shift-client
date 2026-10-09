@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useLoaderData } from "react-router";
+import { useLoaderData, useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
@@ -15,6 +15,7 @@ const generateTrackingId = () => {
 
 const SendParcel = () => {
   const serviceCenters = useLoaderData();
+  const navigate = useNavigate();
 
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
@@ -140,6 +141,7 @@ const SendParcel = () => {
                     icon: "✅",
                     duration: 3000,
                   });
+                  navigate('/dashboard/myParcels')
                 }
               });
             }}

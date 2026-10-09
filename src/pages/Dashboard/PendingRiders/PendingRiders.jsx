@@ -24,6 +24,7 @@ const PendingRiders = () => {
     return <p className="p-4">Loading...</p>;
   }
 
+  // Approve rider
   const handleApprove = (id) => {
     Swal.fire({
       title: "Approve Rider?",
@@ -60,6 +61,7 @@ const PendingRiders = () => {
     });
   };
 
+  // Cancel rider application
   const handleCancel = (id) => {
     Swal.fire({
       title: "Cancel Application?",
@@ -105,11 +107,12 @@ const PendingRiders = () => {
           <thead>
             <tr>
               <th className="w-[5%]">#</th>
-              <th className="w-[17%]">Name</th>
-              <th className="w-[15%]">Phone</th>
-              <th className="w-[15%]">District</th>
-              <th className="w-[15%]">Bike</th>
-              <th className="w-[33%]">Action</th>
+              <th className="w-[16%]">Name</th>
+              <th className="w-[20%]">Email</th>
+              <th className="w-[20%]">Phone</th>
+              <th className="w-[13%]">District</th>
+              <th className="w-[17%]">Applied At</th>
+              <th className="w-[30%]">Action</th>
             </tr>
           </thead>
 
@@ -120,31 +123,40 @@ const PendingRiders = () => {
 
                 <td className="break-words">{rider.name}</td>
 
+                <td className="break-words">{rider.email}</td>
+
                 <td className="break-words">{rider.phone}</td>
 
                 <td className="break-words">{rider.district}</td>
 
-                <td className="break-words">{rider.bikeBrand}</td>
+                <td className="break-words">
+                  {rider.appliedAt
+                    ? new Date(rider.appliedAt).toLocaleString("en-BD", {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      })
+                    : "N/A"}
+                </td>
 
                 <td>
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex items-center gap-2 whitespace-nowrap">
                     <button
                       onClick={() => setSelectedRider(rider)}
-                      className="btn btn-xs sm:btn-sm btn-info"
+                      className="btn btn-sm btn-info"
                     >
                       View
                     </button>
 
                     <button
                       onClick={() => handleApprove(rider._id)}
-                      className="btn btn-xs sm:btn-sm btn-success"
+                      className="btn btn-sm btn-success"
                     >
                       Approve
                     </button>
 
                     <button
                       onClick={() => handleCancel(rider._id)}
-                      className="btn btn-xs sm:btn-sm btn-error"
+                      className="btn btn-sm btn-error"
                     >
                       Cancel
                     </button>
@@ -155,7 +167,7 @@ const PendingRiders = () => {
 
             {riders.length === 0 && (
               <tr>
-                <td colSpan="6" className="text-center py-8">
+                <td colSpan="7" className="text-center py-8">
                   No pending riders found.
                 </td>
               </tr>
@@ -201,7 +213,7 @@ const PendingRiders = () => {
 
               <p>
                 <span className="font-semibold">National ID:</span>{" "}
-                {selectedRider.nationalId}
+                {selectedRider.nid}
               </p>
 
               <p>
@@ -211,7 +223,7 @@ const PendingRiders = () => {
 
               <p>
                 <span className="font-semibold">Bike Registration:</span>{" "}
-                {selectedRider.bikeRegistration}
+                {selectedRider.bikeRegistrationNumber}
               </p>
 
               <p>
@@ -234,7 +246,7 @@ const PendingRiders = () => {
               <p className="font-semibold mb-2">Other Information:</p>
 
               <p className="bg-base-200 p-4 rounded-lg">
-                {selectedRider.otherInfo || "No additional information"}
+                {selectedRider.additionalInfo || "No additional information"}
               </p>
             </div>
 
