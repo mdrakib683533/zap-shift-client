@@ -84,9 +84,9 @@ const ActiveRiders = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className="min-w-0 p-2 sm:p-4">
       {/* Page title */}
-      <h2 className="text-3xl font-bold mb-6">Active Riders</h2>
+      <h2 className="mb-6 text-2xl font-bold sm:text-3xl">Active Riders</h2>
 
       {/* Search box */}
       <div className="mb-6">
@@ -100,17 +100,26 @@ const ActiveRiders = () => {
       </div>
 
       {/* Riders table */}
-      <div className="overflow-x-auto bg-base-100 rounded-xl shadow">
-        <table className="table">
+      <div className="w-full min-w-0 overflow-x-auto rounded-xl bg-base-100 shadow">
+        <table className="table table-sm w-full sm:table-md">
           {/* Table header */}
           <thead>
             <tr>
               <th>#</th>
               <th>Name</th>
-              <th>Email</th>
-              <th>Phone</th>
-              <th>District</th>
-              <th>Bike</th>
+
+              {/* Visible from medium devices */}
+              <th className="hidden md:table-cell">Email</th>
+
+              {/* Visible on large devices */}
+              <th className="hidden lg:table-cell">Phone</th>
+
+              {/* Visible from medium devices */}
+              <th className="hidden md:table-cell">District</th>
+
+              {/* Visible on large devices */}
+              <th className="hidden lg:table-cell">Bike</th>
+
               <th>Status</th>
               <th>Action</th>
             </tr>
@@ -119,35 +128,48 @@ const ActiveRiders = () => {
           {/* Table body */}
           <tbody>
             {filteredRiders.map((rider, index) => (
-              <tr key={rider._id}>
+              <tr key={rider._id} className="hover">
                 {/* Serial number */}
-                <td>{index + 1}</td>
+                <td className="whitespace-nowrap">{index + 1}</td>
 
                 {/* Rider name */}
-                <td className="font-semibold">{rider.name}</td>
+                <td className="max-w-[120px] break-words font-semibold sm:max-w-none">
+                  {rider.name || "N/A"}
+                </td>
 
                 {/* Rider email */}
-                <td>{rider.email}</td>
+                <td className="hidden max-w-[180px] break-words md:table-cell">
+                  {rider.email || "N/A"}
+                </td>
 
                 {/* Rider phone */}
-                <td>{rider.phone}</td>
+                <td className="hidden whitespace-nowrap lg:table-cell">
+                  {rider.phone || "N/A"}
+                </td>
 
                 {/* Rider district */}
-                <td>{rider.district}</td>
+                <td className="hidden md:table-cell">
+                  {rider.district || "N/A"}
+                </td>
 
                 {/* Bike brand */}
-                <td>{rider.bikeBrand}</td>
+                <td className="hidden lg:table-cell">
+                  {rider.bikeBrand || "N/A"}
+                </td>
 
                 {/* Rider status */}
                 <td>
-                  <span className="badge badge-success">{rider.status}</span>
+                  <span className="badge badge-success badge-xs whitespace-nowrap sm:badge-sm">
+                    {rider.status || "active"}
+                  </span>
                 </td>
 
                 {/* Deactivate button */}
                 <td>
                   <button
+                    type="button"
                     onClick={() => handleDeactivate(rider._id)}
-                    className="btn btn-sm btn-error"
+                    className="btn btn-xs btn-error whitespace-nowrap sm:btn-sm"
                   >
                     Deactivate
                   </button>
@@ -158,7 +180,7 @@ const ActiveRiders = () => {
             {/* Show message when no rider is found */}
             {filteredRiders.length === 0 && (
               <tr>
-                <td colSpan="8" className="text-center py-8">
+                <td colSpan={8} className="py-8 text-center">
                   No active rider found.
                 </td>
               </tr>

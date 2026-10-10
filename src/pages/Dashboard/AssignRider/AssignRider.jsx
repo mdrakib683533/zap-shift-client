@@ -10,7 +10,6 @@ const AssignRider = () => {
 
   // Selected parcel for rider assignment
   const [selectedParcel, setSelectedParcel] = useState(null);
-  console.log("Selected parcel:", selectedParcel);
 
   // Load all parcels
   const {
@@ -19,10 +18,8 @@ const AssignRider = () => {
     isError,
   } = useQuery({
     queryKey: ["assignRiderParcels"],
-
     queryFn: async () => {
       const res = await axiosSecure.get("/parcels");
-
       return res.data;
     },
   });
@@ -34,7 +31,6 @@ const AssignRider = () => {
       selectedParcel?.sender?.region,
       selectedParcel?.sender?.district,
     ],
-
     queryFn: async () => {
       const region = selectedParcel.sender.region;
       const district = selectedParcel.sender.district;
@@ -47,7 +43,6 @@ const AssignRider = () => {
 
       return res.data;
     },
-
     // Only fetch riders when a parcel is selected
     enabled:
       !!selectedParcel?.sender?.region && !!selectedParcel?.sender?.district,
@@ -79,7 +74,7 @@ const AssignRider = () => {
   }
 
   return (
-    <div className="ml-2 mt-2">
+    <div className="ml-2 mt-2 min-w-0">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Assign Rider</h1>
@@ -99,18 +94,33 @@ const AssignRider = () => {
 
       {/* Parcel Table */}
       {assignableParcels.length > 0 ? (
-        <div className="overflow-x-auto">
-          <table className="table">
+        <div className="w-full min-w-0 overflow-x-auto">
+          <table className="table table-sm w-full sm:table-md">
             <thead>
               <tr>
                 <th>#</th>
-                <th>Tracking ID</th>
+
+                {/* Hidden on mobile */}
+                <th className="hidden lg:table-cell">Tracking ID</th>
+
                 <th>Parcel Name</th>
-                <th>Type</th>
-                <th>Sender</th>
-                <th>Receiver</th>
+
+                {/* Visible from small devices */}
+                <th className="hidden sm:table-cell">Type</th>
+
+                {/* Visible from medium devices */}
+                <th className="hidden md:table-cell">Sender</th>
+
+                {/* Visible on large devices */}
+                <th className="hidden lg:table-cell">Receiver</th>
+
                 <th>Delivery Cost</th>
-                <th>Created At</th>
+
+                {/* Visible from medium devices */}
+                <th className="hidden whitespace-nowrap md:table-cell">
+                  Created At
+                </th>
+
                 <th>Action</th>
               </tr>
             </thead>
@@ -119,59 +129,71 @@ const AssignRider = () => {
               {assignableParcels.map((parcel, index) => (
                 <tr key={parcel._id} className="hover">
                   {/* Serial */}
-                  <td>{index + 1}</td>
+                  <td className="whitespace-nowrap">{index + 1}</td>
 
-                  {/* Tracking ID */}
-                  <td>
-                    <span className="font-medium">{parcel.trackingId}</span>
+                  {/* Tracking ID: large devices only */}
+                  <td className="hidden lg:table-cell">
+                    <span className="font-medium">
+                      {parcel.trackingId || "N/A"}
+                    </span>
                   </td>
 
                   {/* Parcel Name */}
-                  <td>
-                    <span className="font-medium">{parcel.parcelName}</span>
+                  <td className="max-w-[100px] break-words sm:max-w-none">
+                    <span className="font-medium">
+                      {parcel.parcelName || "N/A"}
+                    </span>
                   </td>
 
                   {/* Parcel Type */}
-                  <td>
-                    <span className="capitalize">{parcel.parcelType}</span>
+                  <td className="hidden sm:table-cell">
+                    <span className="capitalize">
+                      {parcel.parcelType || "N/A"}
+                    </span>
                   </td>
 
                   {/* Sender */}
-                  <td>
-                    <span className="font-medium">{parcel.sender?.name}</span>
+                  <td className="hidden md:table-cell">
+                    <span className="font-medium">
+                      {parcel.sender?.name || "N/A"}
+                    </span>
                   </td>
 
                   {/* Receiver */}
-                  <td>
-                    <span className="font-medium">{parcel.receiver?.name}</span>
+                  <td className="hidden lg:table-cell">
+                    <span className="font-medium">
+                      {parcel.receiver?.name || "N/A"}
+                    </span>
                   </td>
 
                   {/* Delivery Cost */}
-                  <td>
+                  <td className="whitespace-nowrap">
                     <span className="font-semibold">
-                      ৳{parcel.deliveryCost}
+                      ৳{parcel.deliveryCost ?? 0}
                     </span>
                   </td>
 
                   {/* Created At */}
-                  <td>
+                  <td className="hidden whitespace-nowrap md:table-cell">
                     <span className="text-sm text-gray-500">
-                      {new Date(parcel.createdAt).toLocaleString("en-BD", {
-                        dateStyle: "medium",
-                        timeStyle: "short",
-                      })}
+                      {parcel.createdAt
+                        ? new Date(parcel.createdAt).toLocaleString("en-BD", {
+                            dateStyle: "medium",
+                            timeStyle: "short",
+                          })
+                        : "N/A"}
                     </span>
                   </td>
 
                   {/* Action */}
-                  <td>
+                  <td className="whitespace-nowrap">
                     <button
                       type="button"
                       onClick={() => setSelectedParcel(parcel)}
-                      className="btn border-0 text-black font-semibold bg-[#CAEB66] hover:bg-[#9FC83F] gap-2"
+                      className="btn btn-sm gap-2 border-0 bg-[#CAEB66] font-semibold text-black hover:bg-[#9FC83F] sm:btn-md"
                     >
                       <LuUserCheck size={18} />
-                      Assign Rider
+                      <span>Assign Rider</span>
                     </button>
                   </td>
                 </tr>
@@ -192,7 +214,7 @@ const AssignRider = () => {
       {/* Assign Rider Modal */}
       {selectedParcel && (
         <div className="modal modal-open">
-          <div className="modal-box">
+          <div className="modal-box max-w-lg">
             {/* Modal Title */}
             <h3 className="text-xl font-bold">Assign Rider</h3>
 
@@ -230,15 +252,17 @@ const AssignRider = () => {
                   {riders.map((rider) => (
                     <div
                       key={rider._id}
-                      className="flex items-center justify-between border rounded-lg p-3"
+                      className="flex items-center justify-between gap-3 rounded-lg border p-3"
                     >
                       {/* Rider Information */}
-                      <div>
+                      <div className="min-w-0">
                         <p className="font-semibold">
                           {rider.name || "No Name"}
                         </p>
 
-                        <p className="text-sm text-gray-500">{rider.email}</p>
+                        <p className="break-all text-sm text-gray-500">
+                          {rider.email}
+                        </p>
 
                         <p className="text-sm text-gray-500">
                           District: {rider.district}
@@ -281,7 +305,7 @@ const AssignRider = () => {
                             });
                           }
                         }}
-                        className="btn btn-sm bg-[#CAEB66] hover:bg-[#9FC83F] border-0 text-black"
+                        className="btn btn-sm shrink-0 border-0 bg-[#CAEB66] text-black hover:bg-[#9FC83F]"
                       >
                         Select
                       </button>
@@ -289,7 +313,7 @@ const AssignRider = () => {
                   ))}
                 </div>
               ) : (
-                <p className="text-center text-gray-500 py-5">
+                <p className="py-5 text-center text-gray-500">
                   No riders available in this district.
                 </p>
               )}

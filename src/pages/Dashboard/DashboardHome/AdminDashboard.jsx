@@ -99,7 +99,7 @@ const AdminDashboard = () => {
     },
   });
 
-  // Show loading component while requests are running
+  // Show loading while requests are running
   if (
     statsLoading ||
     pendingRidersLoading ||
@@ -121,7 +121,7 @@ const AdminDashboard = () => {
     paymentsError
   ) {
     return (
-      <p className="text-error">
+      <p className="rounded-xl border border-error/20 bg-error/5 p-5 text-sm text-error">
         Failed to load dashboard data. Please try again.
       </p>
     );
@@ -141,7 +141,7 @@ const AdminDashboard = () => {
     value: item.count,
   }));
 
-  // Format monthly labels: 2026-10 -> Oct 2026
+  // Format monthly labels
   const formattedMonthlyStats = monthlyStats.map((item) => {
     const [year, month] = item.month.split("-");
 
@@ -182,7 +182,7 @@ const AdminDashboard = () => {
     },
   ];
 
-  // Format delivery status for the parcel table
+  // Format parcel delivery status
   const formatStatus = (status) => statusLabels[status] || status || "Unknown";
 
   // Delivery status badge styles
@@ -203,22 +203,32 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="space-y-8 ml-2 my-2">
+    <div className="my-2 min-w-0 space-y-5 px-1 sm:space-y-6 sm:px-2 lg:space-y-8">
       {/* Dashboard heading */}
-      <h2 className="text-3xl font-bold md:text-4xl">Admin Dashboard</h2>
+      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl">
+            Admin Dashboard
+          </h2>
+
+          <p className="mt-1 text-sm text-base-content/60">
+            Monitor your parcels, deliveries and payments.
+          </p>
+        </div>
+      </div>
 
       {/* KPI cards */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 xl:grid-cols-3 2xl:grid-cols-5">
         {cards.map((card) => (
           <div
             key={card.title}
-            className="rounded-2xl border border-base-300 bg-base-100 p-6 shadow-sm transition-shadow hover:shadow-md"
+            className="min-w-0 rounded-xl border border-base-300 bg-base-100 p-3 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md sm:rounded-2xl sm:p-5 lg:p-6"
           >
-            <p className="text-sm font-medium text-base-content/60">
+            <p className="text-xs font-medium leading-5 text-base-content/60 sm:text-sm">
               {card.title}
             </p>
 
-            <h3 className="mt-3 text-3xl font-bold text-primary">
+            <h3 className="mt-2 break-words text-xl font-bold text-primary sm:mt-3 sm:text-2xl lg:text-3xl">
               {card.value}
             </h3>
           </div>
@@ -226,33 +236,48 @@ const AdminDashboard = () => {
       </div>
 
       {/* Dashboard charts */}
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+      <div className="grid min-w-0 grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
         {/* Monthly deliveries chart */}
-        <div className="min-w-0 rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm md:p-6">
-          <h3 className="mb-6 text-xl font-bold">Monthly Deliveries</h3>
+        <div className="min-w-0 overflow-hidden rounded-xl border border-base-300 bg-base-100 p-3 shadow-sm sm:rounded-2xl sm:p-5 lg:p-6">
+          <div className="mb-4 sm:mb-6">
+            <h3 className="text-base font-bold sm:text-xl">
+              Monthly Deliveries
+            </h3>
+
+            <p className="mt-1 text-xs text-base-content/60 sm:text-sm">
+              Delivery performance by month
+            </p>
+          </div>
 
           {formattedMonthlyStats.length === 0 ? (
-            <p className="py-10 text-center text-base-content/60">
+            <p className="py-10 text-center text-sm text-base-content/60">
               No monthly delivery data available.
             </p>
           ) : (
-            <ResponsiveContainer width="100%" height={320}>
+            <ResponsiveContainer width="100%" height={280}>
               <BarChart
                 data={formattedMonthlyStats}
-                margin={{ top: 10, right: 10, left: -15, bottom: 5 }}
+                margin={{ top: 10, right: 5, left: -22, bottom: 5 }}
               >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  vertical={false}
+                  stroke="currentColor"
+                  opacity={0.12}
+                />
 
                 <XAxis
                   dataKey="month"
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 10 }}
                   axisLine={false}
                   tickLine={false}
+                  tickMargin={8}
+                  minTickGap={12}
                 />
 
                 <YAxis
                   allowDecimals={false}
-                  tick={{ fontSize: 12 }}
+                  tick={{ fontSize: 10 }}
                   axisLine={false}
                   tickLine={false}
                 />
@@ -264,7 +289,7 @@ const AdminDashboard = () => {
                   name="Deliveries"
                   fill="#00BF83"
                   radius={[6, 6, 0, 0]}
-                  maxBarSize={55}
+                  maxBarSize={45}
                 />
               </BarChart>
             </ResponsiveContainer>
@@ -272,25 +297,31 @@ const AdminDashboard = () => {
         </div>
 
         {/* Delivery status chart */}
-        <div className="min-w-0 rounded-2xl border border-base-300 bg-base-100 p-5 shadow-sm md:p-6">
-          <h3 className="mb-6 text-xl font-bold">Delivery Status</h3>
+        <div className="min-w-0 overflow-hidden rounded-xl border border-base-300 bg-base-100 p-3 shadow-sm sm:rounded-2xl sm:p-5 lg:p-6">
+          <div className="mb-4 sm:mb-6">
+            <h3 className="text-base font-bold sm:text-xl">Delivery Status</h3>
+
+            <p className="mt-1 text-xs text-base-content/60 sm:text-sm">
+              Current parcel status breakdown
+            </p>
+          </div>
 
           {chartData.length === 0 ? (
-            <p className="py-10 text-center text-base-content/60">
+            <p className="py-10 text-center text-sm text-base-content/60">
               No delivery status data available.
             </p>
           ) : (
-            <ResponsiveContainer width="100%" height={320}>
+            <ResponsiveContainer width="100%" height={280}>
               <PieChart>
                 <Pie
                   data={chartData}
                   dataKey="value"
                   nameKey="name"
                   cx="50%"
-                  cy="50%"
-                  outerRadius={100}
+                  cy="45%"
+                  outerRadius="65%"
                   paddingAngle={2}
-                  label
+                  label={false}
                 >
                   {chartData.map((entry, index) => (
                     <Cell
@@ -301,7 +332,12 @@ const AdminDashboard = () => {
                 </Pie>
 
                 <Tooltip />
-                <Legend />
+
+                <Legend
+                  verticalAlign="bottom"
+                  height={36}
+                  wrapperStyle={{ fontSize: "12px" }}
+                />
               </PieChart>
             </ResponsiveContainer>
           )}
@@ -309,57 +345,63 @@ const AdminDashboard = () => {
       </div>
 
       {/* Recent parcels table */}
-      <div className="rounded-2xl border border-base-300 bg-base-100 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3 p-5 md:p-6">
+      <div className="min-w-0 overflow-hidden rounded-xl border border-base-300 bg-base-100 shadow-sm sm:rounded-2xl">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-base-300 p-3 sm:gap-3 sm:p-5 lg:p-6">
           <div>
-            <h3 className="text-xl font-bold">Recent Parcels</h3>
-            <p className="mt-1 text-sm text-base-content/60">
+            <h3 className="text-base font-bold sm:text-xl">Recent Parcels</h3>
+
+            <p className="mt-1 text-xs text-base-content/60 sm:text-sm">
               Latest 5 parcels in your system
             </p>
           </div>
 
-          <span className="badge badge-outline">
+          <span className="badge badge-outline badge-sm sm:badge-md">
             {recentParcels.length} parcels
           </span>
         </div>
 
         {recentParcels.length === 0 ? (
-          <p className="px-6 py-10 text-center text-base-content/60">
+          <p className="px-4 py-10 text-center text-sm text-base-content/60 sm:px-6">
             No parcels found.
           </p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="table">
+          <div className="w-full min-w-0 overflow-x-auto">
+            <table className="table table-sm w-full sm:table-md">
               <thead>
                 <tr>
-                  <th>Tracking ID</th>
+                  {/* Hide tracking ID on mobile */}
+                  <th className="hidden sm:table-cell">Tracking ID</th>
                   <th>Sender</th>
-                  <th>Receiver</th>
+                  <th className="hidden md:table-cell">Receiver</th>
                   <th>Cost</th>
                   <th>Payment</th>
                   <th>Delivery Status</th>
-                  <th>Created Date</th>
+                  <th className="hidden lg:table-cell">Created Date</th>
                 </tr>
               </thead>
 
               <tbody>
                 {recentParcels.map((parcel) => (
                   <tr key={parcel._id}>
-                    <td className="font-medium">
+                    <td className="hidden max-w-[125px] break-all text-xs font-medium sm:table-cell sm:text-sm">
                       {parcel.trackingId || "N/A"}
                     </td>
 
-                    <td>{parcel.sender?.name || "N/A"}</td>
+                    <td className="max-w-[120px] break-words text-xs sm:text-sm">
+                      {parcel.sender?.name || "N/A"}
+                    </td>
 
-                    <td>{parcel.receiver?.name || "N/A"}</td>
+                    <td className="hidden max-w-[120px] break-words text-xs md:table-cell sm:text-sm">
+                      {parcel.receiver?.name || "N/A"}
+                    </td>
 
-                    <td>
+                    <td className="whitespace-nowrap text-xs sm:text-sm">
                       ৳{(parcel.deliveryCost ?? 0).toLocaleString("en-US")}
                     </td>
 
                     <td>
                       <span
-                        className={`badge ${
+                        className={`badge badge-xs whitespace-nowrap sm:badge-sm ${
                           parcel.payment_status === "paid"
                             ? "badge-success"
                             : "badge-warning"
@@ -371,7 +413,7 @@ const AdminDashboard = () => {
 
                     <td>
                       <span
-                        className={`inline-flex whitespace-nowrap rounded-full px-3 py-1 text-xs font-semibold ${getStatusClass(
+                        className={`inline-flex whitespace-nowrap rounded-full px-2 py-1 text-[10px] font-semibold sm:px-3 sm:text-xs ${getStatusClass(
                           parcel.delivery_status,
                         )}`}
                       >
@@ -379,7 +421,7 @@ const AdminDashboard = () => {
                       </span>
                     </td>
 
-                    <td className="whitespace-nowrap">
+                    <td className="hidden whitespace-nowrap lg:table-cell">
                       {parcel.createdAt
                         ? new Date(parcel.createdAt).toLocaleDateString("en-GB")
                         : "N/A"}
@@ -393,63 +435,68 @@ const AdminDashboard = () => {
       </div>
 
       {/* Recent payments table */}
-      <div className="rounded-2xl border border-base-300 bg-base-100 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-3 p-5 md:p-6">
+      <div className="min-w-0 overflow-hidden rounded-xl border border-base-300 bg-base-100 shadow-sm sm:rounded-2xl">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-base-300 p-3 sm:gap-3 sm:p-5 lg:p-6">
           <div>
-            <h3 className="text-xl font-bold">Recent Payments</h3>
-            <p className="mt-1 text-sm text-base-content/60">
+            <h3 className="text-base font-bold sm:text-xl">Recent Payments</h3>
+
+            <p className="mt-1 text-xs text-base-content/60 sm:text-sm">
               Latest 5 successful transactions
             </p>
           </div>
 
-          <span className="badge badge-outline">
+          <span className="badge badge-outline badge-sm sm:badge-md">
             {recentPayments.length} payments
           </span>
         </div>
 
         {recentPayments.length === 0 ? (
-          <p className="px-6 py-10 text-center text-base-content/60">
+          <p className="px-4 py-10 text-center text-sm text-base-content/60 sm:px-6">
             No successful payments found.
           </p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="table">
+          <div className="w-full min-w-0 overflow-x-auto">
+            <table className="table table-xs w-full sm:table-sm lg:table-md">
               <thead>
                 <tr>
                   <th>Transaction ID</th>
-                  <th>User Email</th>
-                  <th>Parcel ID</th>
                   <th>Amount</th>
-                  <th>Payment Date</th>
                   <th>Status</th>
+                  <th className="hidden sm:table-cell">User Email</th>
+                  <th>Payment Date</th>
+                  <th className="hidden lg:table-cell">Parcel ID</th>
                 </tr>
               </thead>
 
               <tbody>
                 {recentPayments.map((payment) => (
                   <tr key={payment._id}>
-                    <td className="font-medium">
+                    <td className="max-w-[100px] break-all text-[11px] font-medium sm:max-w-[160px] sm:text-xs lg:text-sm">
                       {payment.transactionId || "N/A"}
                     </td>
 
-                    <td>{payment.userEmail || "N/A"}</td>
-
-                    <td>{payment.parcelId || "N/A"}</td>
-
-                    <td className="font-semibold">
+                    <td className="whitespace-nowrap text-xs font-semibold sm:text-sm">
                       ৳{(payment.amount ?? 0).toLocaleString("en-US")}
                     </td>
 
-                    <td className="whitespace-nowrap">
+                    <td>
+                      <span className="badge badge-success badge-xs whitespace-nowrap">
+                        {payment.payment_status || "paid"}
+                      </span>
+                    </td>
+
+                    <td className="hidden max-w-[180px] break-words text-xs sm:table-cell sm:text-sm">
+                      {payment.userEmail || "N/A"}
+                    </td>
+
+                    <td className="whitespace-nowrap text-[11px] sm:text-xs lg:text-sm">
                       {payment.paid_at
                         ? new Date(payment.paid_at).toLocaleDateString("en-GB")
                         : "N/A"}
                     </td>
 
-                    <td>
-                      <span className="badge badge-success">
-                        {payment.payment_status || "paid"}
-                      </span>
+                    <td className="hidden max-w-[130px] break-all text-xs lg:table-cell">
+                      {payment.parcelId || "N/A"}
                     </td>
                   </tr>
                 ))}

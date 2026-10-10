@@ -145,19 +145,21 @@ const PendingDeliveries = () => {
 
       {/* Table */}
       {tasks.length > 0 ? (
-        <div className="w-full bg-base-100 rounded-xl shadow overflow-hidden">
-          <table className="table table-fixed w-full">
+        <div className="w-full bg-base-100 rounded-xl shadow overflow-x-auto">
+          <table className="table table-fixed w-full min-w-[340px] sm:min-w-[600px] lg:min-w-0">
             <thead>
               <tr>
-                <th className="w-[4%]">#</th>
-                <th className="w-[13%]">Tracking ID</th>
-                <th className="w-[10%]">Parcel</th>
-                <th className="w-[13%]">Sender</th>
-                <th className="w-[13%]">Receiver</th>
-                <th className="w-[11%]">Pickup</th>
-                <th className="w-[12%]">Delivery</th>
-                <th className="w-[10%]">Status</th>
-                <th className="w-[14%]">Action</th>
+                <th className="hidden lg:table-cell w-[4%]">#</th>
+                <th className="hidden sm:table-cell w-[13%]">Tracking ID</th>
+                <th className="w-[25%] sm:w-[12%] lg:w-[10%]">Parcel</th>
+                <th className="hidden lg:table-cell w-[13%]">Sender</th>
+                <th className="hidden sm:table-cell w-[20%] lg:w-[13%]">
+                  Receiver
+                </th>
+                <th className="hidden lg:table-cell w-[11%]">Pickup</th>
+                <th className="hidden lg:table-cell w-[12%]">Delivery</th>
+                <th className="w-[25%] sm:w-[18%] lg:w-[10%]">Status</th>
+                <th className="w-[25%] sm:w-[25%] lg:w-[14%]">Action</th>
               </tr>
             </thead>
 
@@ -165,10 +167,12 @@ const PendingDeliveries = () => {
               {tasks.map((task, index) => (
                 <tr key={task._id} className="hover">
                   {/* Serial */}
-                  <td>{index + 1}</td>
+                  <td className="hidden lg:table-cell">{index + 1}</td>
 
                   {/* Tracking ID */}
-                  <td className="break-all text-sm">{task.trackingId}</td>
+                  <td className="hidden sm:table-cell break-all text-sm">
+                    {task.trackingId}
+                  </td>
 
                   {/* Parcel */}
                   <td className="break-words">
@@ -180,7 +184,7 @@ const PendingDeliveries = () => {
                   </td>
 
                   {/* Sender */}
-                  <td className="break-words">
+                  <td className="hidden lg:table-cell break-words">
                     <p className="font-medium">{task.sender?.name}</p>
 
                     <p className="text-xs text-gray-500 break-all">
@@ -189,7 +193,7 @@ const PendingDeliveries = () => {
                   </td>
 
                   {/* Receiver */}
-                  <td className="break-words">
+                  <td className="hidden sm:table-cell break-words">
                     <p className="font-medium">{task.receiver?.name}</p>
 
                     <p className="text-xs text-gray-500 break-all">
@@ -198,19 +202,19 @@ const PendingDeliveries = () => {
                   </td>
 
                   {/* Pickup Location */}
-                  <td className="break-words text-sm">
+                  <td className="hidden lg:table-cell break-words text-sm">
                     {task.sender?.district}, {task.sender?.region}
                   </td>
 
                   {/* Delivery Location */}
-                  <td className="break-words text-sm">
+                  <td className="hidden lg:table-cell break-words text-sm">
                     {task.receiver?.district}, {task.receiver?.region}
                   </td>
 
                   {/* Status */}
                   <td>
                     <span
-                      className={`badge badge-sm whitespace-nowrap ${
+                      className={`badge badge-sm h-auto max-w-full whitespace-normal break-words text-center leading-tight ${
                         task.delivery_status === "rider_assigned"
                           ? "badge-warning"
                           : "badge-info"
@@ -228,7 +232,7 @@ const PendingDeliveries = () => {
                       type="button"
                       disabled={statusMutation.isPending}
                       onClick={() => handleStatusUpdate(task)}
-                      className="btn btn-sm whitespace-nowrap w-full bg-[#CAEB66] hover:bg-[#9FC83F] border-0 text-black"
+                      className="btn btn-sm whitespace-normal h-auto min-h-8 w-full bg-[#CAEB66] hover:bg-[#9FC83F] border-0 text-black"
                     >
                       {task.delivery_status === "rider_assigned"
                         ? "Pick Up"

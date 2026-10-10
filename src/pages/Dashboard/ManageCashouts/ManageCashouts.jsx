@@ -109,6 +109,7 @@ const ManageCashouts = () => {
       {/* Page heading */}
       <div className="mb-6">
         <h2 className="text-2xl font-bold sm:text-3xl">Cash Out Management</h2>
+
         <p className="mt-2 text-sm text-gray-500">
           Review rider payment requests and update payment status.
         </p>
@@ -118,6 +119,7 @@ const ManageCashouts = () => {
       <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="min-w-0 rounded-xl bg-base-100 p-4 shadow sm:p-5">
           <p className="text-sm text-gray-500">Pending Requests</p>
+
           <h3 className="mt-2 break-words text-2xl font-bold text-warning">
             ৳{pendingAmount.toLocaleString("en-BD")}
           </h3>
@@ -125,6 +127,7 @@ const ManageCashouts = () => {
 
         <div className="min-w-0 rounded-xl bg-base-100 p-4 shadow sm:p-5">
           <p className="text-sm text-gray-500">Total Paid</p>
+
           <h3 className="mt-2 break-words text-2xl font-bold text-success">
             ৳{paidAmount.toLocaleString("en-BD")}
           </h3>
@@ -139,71 +142,73 @@ const ManageCashouts = () => {
       {cashouts.length === 0 ? (
         <div className="rounded-xl bg-base-100 px-4 py-12 text-center shadow">
           <h4 className="text-lg font-semibold">No Cash Out Requests</h4>
+
           <p className="mt-2 text-sm text-gray-500">
             Rider payment requests will appear here.
           </p>
         </div>
       ) : (
-        <div className="w-full min-w-0 overflow-hidden rounded-xl bg-base-100 shadow">
-          <table className="table table-fixed w-full text-xs sm:text-sm">
-            <colgroup>
-              <col className="w-[6%]" />
-              <col className="w-[17%]" />
-              <col className="w-[13%]" />
-              <col className="w-[12%]" />
-              <col className="w-[14%]" />
-              <col className="w-[12%]" />
-              <col className="w-[9%]" />
-              <col className="w-[10%]" />
-            </colgroup>
-
+        <div className="w-full min-w-0 overflow-x-auto rounded-xl bg-base-100 shadow">
+          <table className="table table-sm w-full sm:table-md">
             <thead>
               <tr>
-                <th className="whitespace-normal px-2">#</th>
-                <th className="whitespace-normal px-1">Rider</th>
-                <th className="whitespace-normal px-1">Tracking ID</th>
-                <th className="whitespace-normal px-1 pl-4">Amount</th>
-                <th className="whitespace-normal px-1">Requested At</th>
-                <th className="whitespace-normal px-1 pl-6">Paid At</th>
-                <th className="whitespace-normal px-1">Status</th>
-                <th className="whitespace-normal px-1">Action</th>
+                {/* Hide serial number on mobile */}
+                <th className="hidden sm:table-cell">#</th>
+
+                <th>Rider</th>
+
+                {/* Tablet and larger */}
+                <th className="hidden md:table-cell">Tracking ID</th>
+
+                <th>Amount</th>
+
+                {/* Tablet and larger */}
+                <th className="hidden md:table-cell">Requested At</th>
+
+                {/* Laptop and larger */}
+                <th className="hidden lg:table-cell">Paid At</th>
+
+                <th>Status</th>
+                <th>Action</th>
               </tr>
             </thead>
 
             <tbody>
               {cashouts.map((cashout, index) => (
                 <tr key={cashout._id}>
-                  <td className="break-words px-1">{index + 1}</td>
+                  {/* Hide serial number on mobile */}
+                  <td className="hidden sm:table-cell">{index + 1}</td>
 
-                  <td className="break-words px-1">
+                  <td className="max-w-32 break-words sm:max-w-none">
                     <p className="font-semibold">
                       {cashout.riderName || "N/A"}
                     </p>
-                    <p className="mt-1 break-all text-[10px] text-gray-500 sm:text-xs">
+
+                    <p className="mt-1 hidden break-all text-xs text-gray-500 sm:block">
                       {cashout.riderEmail}
                     </p>
                   </td>
 
-                  <td className="break-all px-1 text-[10px] sm:text-xs">
+                  <td className="hidden break-all text-xs md:table-cell">
                     {cashout.trackingId}
                   </td>
 
-                  <td className="break-words px-1 font-semibold pl-6">
+                  <td className="whitespace-nowrap font-semibold">
                     ৳
                     {Number(cashout.earningAmount || 0).toLocaleString("en-BD")}
                   </td>
 
-                  <td className="break-words px-1 text-[10px] sm:text-xs">
+                  <td className="hidden text-xs md:table-cell lg:text-sm">
                     {formatDate(cashout.requestedAt)}
                   </td>
 
-                  <td className="break-words px-1 pl-8 text-[10px] sm:text-xs">
+                  <td className="hidden text-xs lg:table-cell">
                     {formatDate(cashout.paidAt)}
                   </td>
 
-                  <td className="px-1">
+                  <td>
                     <span
-                      className={`badge badge-sm whitespace-normal ${
+                      className={`badge badge-sm ${
                         cashout.status === "paid"
                           ? "badge-success"
                           : "badge-warning"
@@ -213,24 +218,26 @@ const ManageCashouts = () => {
                     </span>
                   </td>
 
-                  <td className="px-1">
+                  <td>
                     {cashout.status === "requested" ? (
                       <button
                         onClick={() => handleMarkAsPaid(cashout)}
                         disabled={payMutation.isPending}
-                        className="btn btn-xs h-auto min-h-8 w-full whitespace-normal bg-[#00BF83] px-1 py-2 text-white hover:bg-[#00a873] disabled:opacity-60 sm:btn-sm sm:px-2"
+                        className="btn btn-xs h-auto min-h-8 whitespace-normal bg-[#00BF83] px-2 py-2 text-white hover:bg-[#00a873] disabled:opacity-60 sm:btn-sm"
                       >
                         {payMutation.isPending ? (
                           <span className="loading loading-spinner loading-xs"></span>
                         ) : (
-                          "Mark as Paid"
+                          <>
+                            <span className="hidden sm:inline">
+                              Mark as Paid
+                            </span>
+                            <span className="sm:hidden">Pay</span>
+                          </>
                         )}
                       </button>
                     ) : (
-                      <span className="flex flex-wrap items-center gap-1 font-semibold text-success">
-                        <span>✓</span>
-                        <span>Paid</span>
-                      </span>
+                      <span className="font-semibold text-success">✓ Paid</span>
                     )}
                   </td>
                 </tr>

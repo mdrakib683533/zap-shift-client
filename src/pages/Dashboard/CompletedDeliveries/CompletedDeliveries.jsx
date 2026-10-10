@@ -19,42 +19,33 @@ const CompletedDeliveries = () => {
     isError,
   } = useQuery({
     queryKey: ["completed-deliveries", user?.email],
-
     queryFn: async () => {
       const res = await axiosSecure.get(
         `/rider/completed-deliveries?email=${encodeURIComponent(user.email)}`,
       );
-
       return res.data;
     },
-
     enabled: !!user?.email,
   });
 
   // Get cash out history
   const { data: cashouts = [] } = useQuery({
     queryKey: ["cashouts", user?.email],
-
     queryFn: async () => {
       const res = await axiosSecure.get("/cashouts");
       return res.data;
     },
-
     enabled: !!user?.email,
   });
 
   // Create cash out request
   const cashoutMutation = useMutation({
     mutationFn: async (parcelId) => {
-      const res = await axiosSecure.post("/cashouts", {
-        parcelId,
-      });
-
+      const res = await axiosSecure.post("/cashouts", { parcelId });
       return res.data;
     },
 
     onSuccess: (data) => {
-      // Refresh cash out history and completed deliveries
       queryClient.invalidateQueries({
         queryKey: ["cashouts", user?.email],
       });
@@ -120,53 +111,68 @@ const CompletedDeliveries = () => {
   }
 
   return (
-    <div className="p-4 w-full max-w-full overflow-x-hidden">
+    <div className="w-full min-w-0 max-w-full overflow-x-hidden p-3 sm:p-4 lg:p-4">
       {/* Header */}
-      <div className="mb-6">
-        <h2 className="text-3xl font-bold">Completed Deliveries</h2>
+      <div className="mb-5 sm:mb-6">
+        <h2 className="text-2xl font-bold sm:text-3xl">Completed Deliveries</h2>
 
-        <p className="mt-2 text-gray-500">
+        <p className="mt-2 text-sm text-gray-500 sm:text-base">
           View your completed delivery history and earnings.
         </p>
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-        <div className="bg-base-100 rounded-xl shadow p-5">
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="rounded-xl bg-base-100 p-4 shadow sm:p-5">
           <p className="text-sm text-gray-500">Total Deliveries</p>
-          <h3 className="text-3xl font-bold mt-2">{totalDeliveries}</h3>
+          <h3 className="mt-2 text-2xl font-bold sm:text-3xl">
+            {totalDeliveries}
+          </h3>
         </div>
 
-        <div className="bg-base-100 rounded-xl shadow p-5">
+        <div className="rounded-xl bg-base-100 p-4 shadow sm:p-5">
           <p className="text-sm text-gray-500">Total Earnings</p>
-          <h3 className="text-3xl font-bold mt-2">৳{totalEarnings}</h3>
+          <h3 className="mt-2 text-2xl font-bold sm:text-3xl">
+            ৳{totalEarnings}
+          </h3>
         </div>
       </div>
 
       {/* Completed Delivery Count */}
       <div className="mb-5">
-        <span className="badge badge-success badge-lg">
+        <span className="badge badge-success badge-lg whitespace-normal">
           {totalDeliveries} Completed Deliveries
         </span>
       </div>
 
       {/* Completed Deliveries Table */}
       {deliveries.length > 0 ? (
-        <div className="w-full bg-base-100 rounded-xl shadow overflow-hidden">
-          <table className="table table-fixed w-full text-sm">
+        <div className="w-full min-w-0 overflow-x-auto rounded-xl bg-base-100 shadow">
+          <table className="table w-full min-w-[360px] table-fixed text-xs sm:min-w-0 sm:text-sm">
             <thead>
               <tr>
-                <th className="w-[4%]">#</th>
-                <th className="w-[11%]">Tracking ID</th>
-                <th className="w-[9%]">Parcel</th>
-                <th className="w-[11%]">Sender</th>
-                <th className="w-[11%]">Receiver</th>
-                <th className="w-[12%]">Pickup</th>
-                <th className="w-[10%]">Delivered</th>
-                <th className="w-[7%]">Fee</th>
-                <th className="w-[8%]">Earning</th>
-                <th className="w-[8%]">Status</th>
-                <th className="w-[12%]">Cash Out</th>
+                {/* Desktop only */}
+                <th className="hidden lg:table-cell lg:w-[4%]">#</th>
+
+                {/* Tracking ID: tablet and desktop */}
+                <th className="hidden sm:table-cell sm:w-[20%] lg:w-[11%]">
+                  Tracking ID
+                </th>
+
+                {/* All devices */}
+                <th className="w-[30%] sm:w-[24%] lg:w-[9%]">Parcel</th>
+
+                {/* Desktop only */}
+                <th className="hidden lg:table-cell lg:w-[11%]">Sender</th>
+                <th className="hidden lg:table-cell lg:w-[11%]">Receiver</th>
+                <th className="hidden lg:table-cell lg:w-[12%]">Pickup</th>
+                <th className="hidden lg:table-cell lg:w-[10%]">Delivered</th>
+                <th className="hidden lg:table-cell lg:w-[7%]">Fee</th>
+
+                {/* All devices */}
+                <th className="w-[23%] sm:w-[20%] lg:w-[8%]">Earning</th>
+                <th className="w-[22%] sm:w-[18%] lg:w-[8%]">Status</th>
+                <th className="w-[25%] sm:w-[18%] lg:w-[12%]">Cash Out</th>
               </tr>
             </thead>
 
@@ -179,32 +185,40 @@ const CompletedDeliveries = () => {
 
                 return (
                   <tr key={delivery._id} className="hover">
-                    <td>{index + 1}</td>
+                    {/* Serial number: desktop only */}
+                    <td className="hidden lg:table-cell">{index + 1}</td>
 
-                    <td className="break-all text-xs">{delivery.trackingId}</td>
+                    {/* Tracking ID: tablet and desktop */}
+                    <td className="hidden break-all text-xs sm:table-cell">
+                      {delivery.trackingId}
+                    </td>
 
+                    {/* Parcel */}
                     <td className="break-words">
                       <p className="font-medium">{delivery.parcelName}</p>
-                      <p className="text-xs text-gray-500 capitalize">
+                      <p className="hidden text-xs capitalize text-gray-500 sm:block">
                         {delivery.parcelType}
                       </p>
                     </td>
 
-                    <td className="break-words">
+                    {/* Sender: desktop only */}
+                    <td className="hidden break-words lg:table-cell">
                       <p className="font-medium">{delivery.sender?.name}</p>
-                      <p className="text-xs text-gray-500 break-all">
+                      <p className="break-all text-xs text-gray-500">
                         {delivery.sender?.contact}
                       </p>
                     </td>
 
-                    <td className="break-words">
+                    {/* Receiver: desktop only */}
+                    <td className="hidden break-words lg:table-cell">
                       <p className="font-medium">{delivery.receiver?.name}</p>
-                      <p className="text-xs text-gray-500 break-all">
+                      <p className="break-all text-xs text-gray-500">
                         {delivery.receiver?.contact}
                       </p>
                     </td>
 
-                    <td className="break-words text-xs">
+                    {/* Pickup: desktop only */}
+                    <td className="hidden break-words text-xs lg:table-cell">
                       {delivery.pickedUpAt
                         ? new Date(delivery.pickedUpAt).toLocaleString(
                             "en-BD",
@@ -216,7 +230,8 @@ const CompletedDeliveries = () => {
                         : "N/A"}
                     </td>
 
-                    <td className="break-words text-xs">
+                    {/* Delivered: desktop only */}
+                    <td className="hidden break-words text-xs lg:table-cell">
                       {delivery.deliveredAt
                         ? new Date(delivery.deliveredAt).toLocaleString(
                             "en-BD",
@@ -228,17 +243,22 @@ const CompletedDeliveries = () => {
                         : "N/A"}
                     </td>
 
-                    <td>৳{delivery.deliveryFee}</td>
+                    {/* Fee: desktop only */}
+                    <td className="hidden whitespace-nowrap lg:table-cell">
+                      ৳{delivery.deliveryFee}
+                    </td>
 
-                    <td>
+                    {/* Earning */}
+                    <td className="break-words">
                       <p className="font-semibold">৳{delivery.riderEarning}</p>
-                      <p className="text-xs text-gray-500">
+                      <p className="hidden text-xs text-gray-500 lg:block">
                         {delivery.earningRate}%
                       </p>
                     </td>
 
-                    <td>
-                      <span className="badge badge-success badge-sm whitespace-normal">
+                    {/* Status */}
+                    <td className="break-words">
+                      <span className="badge badge-success badge-xs whitespace-normal sm:badge-sm">
                         {delivery.delivery_status === "service_center_delivered"
                           ? "Service Center"
                           : "Delivered"}
@@ -246,10 +266,10 @@ const CompletedDeliveries = () => {
                     </td>
 
                     {/* Cash Out Action */}
-                    <td>
+                    <td className="min-w-0">
                       {cashout ? (
                         <span
-                          className={`badge badge-sm whitespace-normal ${
+                          className={`badge badge-xs whitespace-normal sm:badge-sm ${
                             cashout.status === "paid"
                               ? "badge-success"
                               : "badge-warning"
@@ -262,7 +282,7 @@ const CompletedDeliveries = () => {
                           type="button"
                           disabled={cashoutMutation.isPending}
                           onClick={() => handleCashout(delivery)}
-                          className="btn btn-xs w-full bg-[#CAEB66] hover:bg-[#9FC83F] border-0 text-black"
+                          className="btn btn-xs min-h-8 w-full min-w-0 whitespace-nowrap border-0 bg-[#CAEB66] px-1 text-[10px] text-black hover:bg-[#9FC83F] sm:px-2 sm:text-xs"
                         >
                           Cash Out
                         </button>

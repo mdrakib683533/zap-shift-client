@@ -3,13 +3,6 @@
 
 @plugin "daisyui";
 
-/* @plugin "daisyui/theme" {
-  name: "dark";
-  default: true;
-  --color-primary: [#CAEB66];
-  --color-secondary: teal;
-} */
-
 
 .font-urbanist {
   font-family: "Urbanist", sans-serif;

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
+import { FaEye, FaCheck, FaTimes } from "react-icons/fa";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const PendingRiders = () => {
@@ -99,20 +100,21 @@ const PendingRiders = () => {
   };
 
   return (
-    <div className="p-4 w-full max-w-full overflow-x-hidden">
-      <h2 className="text-3xl font-bold mb-6">Pending Riders</h2>
+    <div className="min-w-0 w-full overflow-x-hidden p-2 sm:p-4">
+      <h2 className="mb-6 text-2xl font-bold sm:text-3xl">Pending Riders</h2>
 
-      <div className="w-full overflow-x-hidden bg-base-100 rounded-xl shadow">
-        <table className="table w-full table-fixed">
+      <div className="w-full min-w-0 overflow-x-auto rounded-xl bg-base-100 shadow">
+        <table className="table table-sm w-full sm:table-md">
           <thead>
             <tr>
-              <th className="w-[5%]">#</th>
-              <th className="w-[16%]">Name</th>
-              <th className="w-[20%]">Email</th>
-              <th className="w-[20%]">Phone</th>
-              <th className="w-[13%]">District</th>
-              <th className="w-[17%]">Applied At</th>
-              <th className="w-[30%]">Action</th>
+              <th>#</th>
+              <th>Name</th>
+              <th className="hidden md:table-cell">Email</th>
+              <th className="hidden lg:table-cell">Phone</th>
+              <th className="hidden md:table-cell">District</th>
+              <th className="hidden lg:table-cell">Applied At</th>
+              <th>Status</th>
+              <th>Action</th>
             </tr>
           </thead>
 
@@ -121,15 +123,19 @@ const PendingRiders = () => {
               <tr key={rider._id}>
                 <td>{index + 1}</td>
 
-                <td className="break-words">{rider.name}</td>
+                <td className="max-w-28 break-words font-semibold sm:max-w-none">
+                  {rider.name}
+                </td>
 
-                <td className="break-words">{rider.email}</td>
+                <td className="hidden break-all md:table-cell">
+                  {rider.email}
+                </td>
 
-                <td className="break-words">{rider.phone}</td>
+                <td className="hidden lg:table-cell">{rider.phone}</td>
 
-                <td className="break-words">{rider.district}</td>
+                <td className="hidden md:table-cell">{rider.district}</td>
 
-                <td className="break-words">
+                <td className="hidden lg:table-cell">
                   {rider.appliedAt
                     ? new Date(rider.appliedAt).toLocaleString("en-BD", {
                         dateStyle: "medium",
@@ -139,26 +145,44 @@ const PendingRiders = () => {
                 </td>
 
                 <td>
-                  <div className="flex items-center gap-2 whitespace-nowrap">
+                  <span className="badge badge-warning badge-sm">
+                    {rider.status}
+                  </span>
+                </td>
+
+                <td>
+                  <div className="flex flex-row items-center gap-1 sm:gap-2">
+                    {/* View button: icon on mobile */}
                     <button
                       onClick={() => setSelectedRider(rider)}
-                      className="btn btn-sm btn-info"
+                      className="btn btn-xs btn-info sm:btn-sm"
+                      title="View rider"
+                      aria-label="View rider"
                     >
-                      View
+                      <FaEye className="text-sm" />
+                      <span className="hidden sm:inline">View</span>
                     </button>
 
+                    {/* Approve button: icon on mobile */}
                     <button
                       onClick={() => handleApprove(rider._id)}
-                      className="btn btn-sm btn-success"
+                      className="btn btn-xs btn-success sm:btn-sm"
+                      title="Approve rider"
+                      aria-label="Approve rider"
                     >
-                      Approve
+                      <FaCheck className="text-sm" />
+                      <span className="hidden sm:inline">Approve</span>
                     </button>
 
+                    {/* Cancel button: icon on mobile */}
                     <button
                       onClick={() => handleCancel(rider._id)}
-                      className="btn btn-sm btn-error"
+                      className="btn btn-xs btn-error sm:btn-sm"
+                      title="Cancel application"
+                      aria-label="Cancel application"
                     >
-                      Cancel
+                      <FaTimes className="text-sm" />
+                      <span className="hidden sm:inline">Cancel</span>
                     </button>
                   </div>
                 </td>
@@ -167,7 +191,7 @@ const PendingRiders = () => {
 
             {riders.length === 0 && (
               <tr>
-                <td colSpan="7" className="text-center py-8">
+                <td colSpan="8" className="py-8 text-center">
                   No pending riders found.
                 </td>
               </tr>
@@ -176,12 +200,13 @@ const PendingRiders = () => {
         </table>
       </div>
 
+      {/* Rider information modal */}
       {selectedRider && (
         <dialog open className="modal">
-          <div className="modal-box max-w-2xl max-h-[90vh] overflow-y-auto">
-            <h3 className="font-bold text-2xl mb-5">Rider Information</h3>
+          <div className="modal-box max-h-[90vh] max-w-2xl overflow-y-auto">
+            <h3 className="mb-5 text-2xl font-bold">Rider Information</h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 break-words">
+            <div className="grid grid-cols-1 gap-4 break-words sm:grid-cols-2">
               <p>
                 <span className="font-semibold">Name:</span>{" "}
                 {selectedRider.name}
@@ -243,9 +268,9 @@ const PendingRiders = () => {
             </div>
 
             <div className="mt-5 break-words">
-              <p className="font-semibold mb-2">Other Information:</p>
+              <p className="mb-2 font-semibold">Other Information:</p>
 
-              <p className="bg-base-200 p-4 rounded-lg">
+              <p className="rounded-lg bg-base-200 p-4">
                 {selectedRider.additionalInfo || "No additional information"}
               </p>
             </div>
