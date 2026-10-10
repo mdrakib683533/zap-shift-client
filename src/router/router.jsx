@@ -24,6 +24,9 @@ import PendingDeliveries from "../pages/Dashboard/PendingDeliveries/PendingDeliv
 import CompletedDeliveries from "../pages/Dashboard/CompletedDeliveries/CompletedDeliveries";
 import CashOut from "../pages/Dashboard/CashOut/CashOut";
 import ManageCashouts from "../pages/Dashboard/ManageCashouts/ManageCashouts";
+import UpdateProfile from "../pages/Dashboard/UpdateProfile/UpdateProfile";
+import DashboardHome from "../pages/Dashboard/DashboardHome/DashboardHome";
+import About from "../pages/About/About";
 
 export const router = createBrowserRouter([
   {
@@ -38,6 +41,10 @@ export const router = createBrowserRouter([
         path: "coverage",
         Component: Coverage,
         loader: () => fetch("./serviceCenter.json"),
+      },
+      {
+        path: "about",
+        Component: About,
       },
       {
         path: "forbidden",
@@ -86,6 +93,10 @@ export const router = createBrowserRouter([
     ),
     children: [
       {
+        index: true,
+        Component: DashboardHome,
+      },
+      {
         path: "myParcels",
         Component: MyParcels,
       },
@@ -100,6 +111,10 @@ export const router = createBrowserRouter([
       {
         path: "track",
         Component: TrackParcel,
+      },
+      {
+        path: "updateProfile",
+        Component: UpdateProfile,
       },
 
       // rider only routes

@@ -1,4 +1,5 @@
 import MarqueeModule from "react-fast-marquee";
+import { motion } from "framer-motion";
 
 import client1 from "../../../assets/brands/amazon.png";
 import client2 from "../../../assets/brands/amazon_vector.png";
@@ -22,14 +23,21 @@ const brands = [
 
 const ClientLogos = () => {
   return (
-    <section className="bg-base-100 py-12 sm:py-16 md:py-20">
+    <section className="overflow-hidden bg-base-100 py-12 sm:py-16 md:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto mb-8 max-w-2xl text-center sm:mb-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary sm:text-sm">
+        {/* Animated Heading */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="mx-auto mb-8 max-w-2xl text-center sm:mb-10"
+        >
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#00BF83] sm:text-sm">
             Trusted By
           </p>
 
-          <h2 className="mt-2 text-primary text-2xl font-bold sm:text-3xl md:text-4xl">
+          <h2 className="mt-2 text-2xl font-bold text-primary sm:text-3xl md:text-4xl">
             Our Valued Brands
           </h2>
 
@@ -37,31 +45,41 @@ const ClientLogos = () => {
             Trusted by businesses across Bangladesh for fast, reliable, and
             hassle-free delivery services.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="overflow-hidden">
+        {/* Animated Brand Logos */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.96 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="overflow-hidden rounded-2xl border border-base-300/60 bg-base-200/40 py-7 sm:py-9"
+        >
           <Marquee
             direction="left"
             speed={45}
-            pauseOnHover={true}
-            gradient={true}
+            pauseOnHover
+            gradient
             gradientWidth={60}
-            autoFill={true}
+            autoFill
           >
             {brands.map((brand) => (
-              <div
+              <motion.div
                 key={brand.id}
-                className="mx-[50px] flex items-center justify-center"
+                whileHover={{ scale: 1.15, y: -3 }}
+                transition={{ duration: 0.25 }}
+                className="mx-8 flex h-12 items-center justify-center sm:mx-12 md:mx-[50px]"
               >
                 <img
                   src={brand.logo}
                   alt={brand.name}
-                  className="h-[24px] w-auto object-contain grayscale transition-all duration-300 hover:grayscale-0"
+                  loading="lazy"
+                  className="h-6 w-auto max-w-28 object-contain grayscale transition-[filter] duration-300 hover:grayscale-0 sm:h-7 md:h-8"
                 />
-              </div>
+              </motion.div>
             ))}
           </Marquee>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

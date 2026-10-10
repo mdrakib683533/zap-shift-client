@@ -6,5 +6,20 @@
  *  5. confirm payment
  *  6. after payment is successful: update payment status on the parcel also enter an entry in the parcel history collection.
  * 
+ * 
+ * -------------------------------------------------------------
+ *                           PAYMENT
+ * -------------------------------------------------------------
+ * 
+ * 1. take card information
+ * 2. validate card information
+ * 
+ * 
+ * 
+ * 
+ * 
+
+
+
  */
  

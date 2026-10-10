@@ -1,10 +1,12 @@
 import { Outlet } from "react-router";
 import Navbar from "../pages/shared/Navbar/Navbar";
 import Footer from "../pages/shared/Footer/Footer";
+import ScrollToTop from "../components/ScrollToTop";
 
 const RootLayout = () => {
   return (
     <div>
+      <ScrollToTop></ScrollToTop>
       <Navbar></Navbar>
       <Outlet></Outlet>
       <Footer></Footer>

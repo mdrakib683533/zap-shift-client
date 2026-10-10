@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import ServiceCard from "./ServiceCard";
 
 const services = [
@@ -40,26 +41,53 @@ const services = [
 ];
 
 const Services = () => {
+  const containerVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.12,
+      },
+    },
+  };
+
   return (
-    <section className="bg-base-200 py-16 md:py-20">
-      <div className="mx-auto max-w-7xl px-4">
-        {/* Section Heading */}
-        <div className="mx-auto mb-12 max-w-2xl text-center">
-          <h2 className="text-3xl text-primary font-bold md:text-4xl">Our Services</h2>
+    <section className="overflow-hidden bg-base-200 py-16 md:py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {/* Animated Section Heading */}
+        <motion.div
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.65, ease: "easeOut" }}
+          className="mx-auto mb-12 max-w-2xl text-center"
+        >
+          <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-[#00BF83]">
+            What We Offer
+          </p>
+
+          <h2 className="text-3xl font-bold text-primary md:text-4xl">
+            Our Services
+          </h2>
 
           <p className="mt-4 text-sm leading-6 text-base-content/60 md:text-base">
             Enjoy fast, reliable parcel delivery with real-time tracking and
             zero hassle. From personal packages to business shipments — we
             deliver on time, every time.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Service Cards */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map((service) => (
-            <ServiceCard key={service.title} service={service} />
+        {/* Animated Service Cards */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+          className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          {services.map((service, index) => (
+            <ServiceCard key={service.title} service={service} index={index} />
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

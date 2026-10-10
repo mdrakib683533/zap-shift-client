@@ -98,7 +98,7 @@ const DashboardLayout = () => {
 
           <li>
             <NavLink
-              to="/dashboard/profile"
+              to="/dashboard/updateProfile"
               className="flex items-center gap-3"
             >
               <LuUserRoundPen size={20} />

@@ -2,6 +2,7 @@ import Banner from "../Banner/Banner";
 import BeMerchant from "../BeMerchant/BeMerchant";
 import Benefits from "../Benefits/Benefits";
 import ClientLogos from "../ClientLogos/ClientLogos";
+import CustomerReviews from "../CustomerReviews/CustomerReviews";
 import Services from "../Services/Services";
 
 const Home = () => {
@@ -12,6 +13,7 @@ const Home = () => {
             <ClientLogos></ClientLogos>
             <Benefits></Benefits>
             <BeMerchant></BeMerchant>
+            <CustomerReviews></CustomerReviews>
         </div>
     );
 };
