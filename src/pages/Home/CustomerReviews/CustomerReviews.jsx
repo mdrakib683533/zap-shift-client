@@ -1,220 +1,235 @@
-import { useEffect, useRef, useState } from "react";
-import { FaQuoteLeft, FaStar } from "react-icons/fa";
+import { useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
+import { FaStar, FaQuoteLeft } from "react-icons/fa";
 
-// Customer reviews
+import "swiper/css";
+
 const reviews = [
   {
-    name: "Nina Khan",
-    role: "Regular Customer",
-    image: "https://randomuser.me/api/portraits/women/44.jpg",
+    id: 1,
+    name: "Md. Hasan",
+    location: "Dhaka, Bangladesh",
+    image: "https://i.pravatar.cc/150?img=12",
     rating: 5,
     review:
-      "Zap Shift delivers my parcels quickly and safely. The real-time tracking system is very helpful.",
+      "Excellent delivery service! My parcel arrived on time, and the tracking system was very helpful.",
   },
   {
-    name: "Michael Jordan",
-    role: "Business Owner",
-    image: "https://randomuser.me/api/portraits/men/32.jpg",
+    id: 2,
+    name: "Tania Akter",
+    location: "Chittagong, Bangladesh",
+    image: "https://i.pravatar.cc/150?img=47",
     rating: 5,
     review:
-      "Excellent delivery service with professional support. My business deliveries have become much easier.",
+      "Very professional service. My parcel reached on time, and the whole process was smooth and easy.",
   },
   {
-    name: "Emma Watson",
-    role: "Online Shopper",
-    image: "https://randomuser.me/api/portraits/women/68.jpg",
-    rating: 4,
-    review:
-      "My parcels always arrive on time. I really appreciate the smooth delivery experience.",
-  },
-  {
-    name: "John Doe",
-    role: "Regular Customer",
-    image: "https://randomuser.me/api/portraits/men/46.jpg",
+    id: 3,
+    name: "Rifat Ahmed",
+    location: "Rajshahi, Bangladesh",
+    image: "https://i.pravatar.cc/150?img=11",
     rating: 5,
     review:
-      "Fast, reliable, and affordable delivery. I would definitely recommend Zap Shift to others.",
+      "Affordable, reliable and easy to use. I will definitely use Zap Shift again!",
   },
   {
-    name: "Jane Smith",
-    role: "Entrepreneur",
-    image: "https://randomuser.me/api/portraits/women/65.jpg",
+    id: 4,
+    name: "Nusrat Jahan",
+    location: "Feni, Bangladesh",
+    image: "https://i.pravatar.cc/150?img=44",
     rating: 5,
     review:
-      "Their delivery service helps me manage my online business efficiently. Great customer support!",
+      "Great experience with Zap Shift. My package was delivered safely, and customer support was helpful.",
   },
   {
-    name: "Alex Brown",
-    role: "Freelancer",
-    image: "https://randomuser.me/api/portraits/men/75.jpg",
-    rating: 4,
-    review:
-      "The tracking updates are useful, and the delivery process is simple and convenient.",
-  },
-  {
-    name: "Sarah Ahmed",
-    role: "Online Seller",
-    image: "https://randomuser.me/api/portraits/women/33.jpg",
+    id: 5,
+    name: "Sabbir Hossain",
+    location: "Cumilla, Bangladesh",
+    image: "https://i.pravatar.cc/150?img=13",
     rating: 5,
     review:
-      "A dependable courier service for my daily orders. My customers are happy with the delivery speed.",
+      "Fast delivery and excellent service. The real-time tracking feature makes everything convenient.",
   },
   {
-    name: "David Miller",
-    role: "Regular Customer",
-    image: "https://randomuser.me/api/portraits/men/52.jpg",
+    id: 6,
+    name: "Sumaiya Islam",
+    location: "Sylhet, Bangladesh",
+    image: "https://i.pravatar.cc/150?img=45",
     rating: 5,
     review:
-      "Booking a parcel is easy, and the service is reliable. I have had a great experience so far.",
+      "I love how easy it is to send parcels. The service is reliable, and the delivery updates are useful.",
+  },
+  {
+    id: 7,
+    name: "Arif Hossain",
+    location: "Khulna, Bangladesh",
+    image: "https://i.pravatar.cc/150?img=14",
+    rating: 5,
+    review:
+      "My parcel was delivered safely and quickly. A great choice for hassle-free parcel delivery.",
+  },
+  {
+    id: 8,
+    name: "Mim Akter",
+    location: "Barishal, Bangladesh",
+    image: "https://i.pravatar.cc/150?img=49",
+    rating: 5,
+    review:
+      "Amazing experience from pickup to delivery. I would recommend Zap Shift to my friends and family.",
   },
 ];
 
-// Review card
-const ReviewCard = ({ customer }) => {
-  return (
-    <article className="review-card card bg-base-100">
-      <div className="mb-4 flex items-start gap-3">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#00BF83]/10 text-[#00BF83]">
-          <FaQuoteLeft size={16} />
-        </span>
-
-        <div className="flex min-w-0 flex-1 items-center gap-3">
-          <img
-            src={customer.image}
-            alt={customer.name}
-            loading="lazy"
-            className="h-12 w-12 shrink-0 rounded-full border-2 border-[#00BF83]/40 object-cover"
-          />
-
-          <div className="min-w-0">
-            <h3 className="truncate text-sm font-bold text-base-content sm:text-base">
-              {customer.name}
-            </h3>
-
-            <p className="mt-1 text-xs text-base-content/60">{customer.role}</p>
-
-            <div className="mt-1 flex items-center gap-2">
-              <span className="text-sm font-bold text-amber-600">
-                {customer.rating.toFixed(1)}
-              </span>
-
-              <div className="flex gap-0.5 text-amber-500">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <FaStar key={star} size={11} />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <p className="line-clamp-3 flex-1 overflow-hidden text-sm leading-6 text-base-content/75">
-        "{customer.review}"
-      </p>
-    </article>
-  );
-};
-
 const CustomerReviews = () => {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [slideWidth, setSlideWidth] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-
-  const carouselRef = useRef(null);
-  const slideRef = useRef(null);
-
-  // Measure each slide for responsive positioning
-  useEffect(() => {
-    const slide = slideRef.current;
-
-    if (!slide) return;
-
-    const updateWidth = () => {
-      setSlideWidth(slide.getBoundingClientRect().width);
-    };
-
-    updateWidth();
-
-    const observer = new ResizeObserver(updateWidth);
-    observer.observe(slide);
-
-    return () => observer.disconnect();
-  }, []);
-
-  // Automatically move to the next card
-  useEffect(() => {
-    if (isPaused || slideWidth === 0) return;
-
-    const interval = setInterval(() => {
-      setActiveIndex((current) => (current + 1) % reviews.length);
-    }, 3200);
-
-    return () => clearInterval(interval);
-  }, [isPaused, slideWidth]);
+  const [swiperInstance, setSwiperInstance] = useState(null);
 
   return (
-    <section className="overflow-hidden bg-base-200/40 py-16 sm:py-20">
-      {/* Section heading */}
-      <div className="mx-auto mb-16 max-w-7xl px-5 text-center sm:mb-20 sm:px-8">
-        <span className="inline-block rounded-full bg-[#00BF83]/10 px-4 py-2 text-sm font-semibold text-[#00BF83]">
-          Customer Reviews
-        </span>
-
-        <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-base-content sm:text-4xl lg:text-5xl">
-          What Our Customers <span className="text-[#00BF83]">Say</span>
-        </h2>
-
-        <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-base-content/65 sm:text-base">
-          Thousands of customers trust our delivery service for speed,
-          reliability, and exceptional support.
-        </p>
-      </div>
-
-      {/* Carousel */}
-      <div
-        ref={carouselRef}
-        className="review-carousel"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-        onTouchStart={() => setIsPaused(true)}
-        onTouchEnd={() => setIsPaused(false)}
-      >
+    <section className="overflow-hidden bg-base-100 py-16 md:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        {/* Section heading animation */}
         <div
-          className="review-carousel-track"
-          style={{
-            transform: `translateX(calc(50vw - ${
-              activeIndex * slideWidth + slideWidth / 2
-            }px))`,
-          }}
+          className="mb-10 text-center md:mb-14"
+          data-aos="fade-up"
+          data-aos-duration="800"
         >
-          {reviews.map((customer, index) => (
-            <div
-              key={customer.name}
-              ref={index === 0 ? slideRef : null}
-              className={`review-carousel-item ${
-                index === activeIndex ? "is-active" : ""
+          <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-[#00BF83]/10 px-5 py-2 font-medium text-[#00BF83]">
+            <FaStar />
+            What Our Customers Say
+          </p>
+
+          <h2 className="mb-4 text-3xl font-bold text-base-content md:text-5xl">
+            Customer <span className="text-[#00BF83]">Reviews</span>
+          </h2>
+
+          <p className="mx-auto max-w-2xl text-base-content/60 md:text-lg">
+            Real stories from real customers. Discover why people trust Zap
+            Shift for fast, reliable and hassle-free delivery.
+          </p>
+        </div>
+
+        {/* Review carousel animation */}
+        <div data-aos="fade-up" data-aos-duration="1000" data-aos-delay="150">
+          <Swiper
+            modules={[Autoplay]}
+            onSwiper={setSwiperInstance}
+            onSlideChange={(swiper) => {
+              setActiveIndex(swiper.realIndex);
+            }}
+            loop={true}
+            centeredSlides={true}
+            slidesPerView={1.15}
+            spaceBetween={12}
+            speed={700}
+            autoplay={{
+              delay: 1500,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }}
+            breakpoints={{
+              480: {
+                slidesPerView: 1.4,
+                spaceBetween: 16,
+              },
+              640: {
+                slidesPerView: 1.7,
+                spaceBetween: 20,
+              },
+              768: {
+                slidesPerView: 2.1,
+                spaceBetween: 24,
+              },
+              1024: {
+                slidesPerView: 2.5,
+                spaceBetween: 28,
+              },
+              1280: {
+                slidesPerView: 2.7,
+                spaceBetween: 30,
+              },
+            }}
+            className="customer-reviews-swiper !overflow-visible !py-8"
+          >
+            {reviews.map((review) => (
+              <SwiperSlide key={review.id} className="h-auto">
+                {({ isActive }) => (
+                  <div
+                    className={`h-full rounded-2xl border border-base-200 bg-base-100 p-5 transition-all duration-700 sm:p-6 md:p-8 ${
+                      isActive
+                        ? "scale-100 opacity-100 shadow-2xl ring-1 ring-[#00BF83]/20"
+                        : "scale-[0.90] opacity-60 shadow-md"
+                    }`}
+                  >
+                    {/* Customer profile */}
+                    <div className="mb-6 flex items-center gap-3 sm:gap-4">
+                      <img
+                        src={review.image}
+                        alt={review.name}
+                        loading="lazy"
+                        className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-[#00BF83]/20 sm:h-14 sm:w-14"
+                      />
+
+                      <div className="min-w-0 flex-1">
+                        <h3 className="truncate font-bold text-base-content">
+                          {review.name}
+                        </h3>
+
+                        <p className="text-xs text-base-content/60 sm:text-sm">
+                          {review.location}
+                        </p>
+
+                        {/* Star rating */}
+                        <div className="mt-2 flex gap-1 text-amber-400">
+                          {Array.from({ length: review.rating }, (_, index) => (
+                            <FaStar key={index} size={13} />
+                          ))}
+                        </div>
+                      </div>
+
+                      <FaQuoteLeft className="shrink-0 text-xl text-[#00BF83]/30 sm:text-2xl" />
+                    </div>
+
+                    {/* Customer review */}
+                    <p className="text-sm leading-7 text-base-content/70 sm:text-base">
+                      {review.review}
+                    </p>
+
+                    {/* Review badge */}
+                    <div className="mt-6">
+                      <span className="inline-flex items-center gap-2 rounded-full bg-[#00BF83]/10 px-3 py-2 text-xs font-medium text-[#00BF83] sm:text-sm">
+                        <span>✓</span>
+                        Happy Customer
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+
+        {/* Clickable pagination dots */}
+        <div
+          className="mt-5 flex justify-center gap-2"
+          data-aos="fade-up"
+          data-aos-duration="700"
+          data-aos-delay="200"
+        >
+          {reviews.map((review, index) => (
+            <button
+              key={review.id}
+              type="button"
+              onClick={() => swiperInstance?.slideToLoop(index)}
+              aria-label={`Go to review ${index + 1}`}
+              aria-current={activeIndex === index ? "true" : undefined}
+              className={`h-2.5 rounded-full transition-all duration-300 ${
+                activeIndex === index
+                  ? "w-7 bg-[#00BF83]"
+                  : "w-2.5 bg-base-300 hover:bg-[#00BF83]/50"
               }`}
-            >
-              <ReviewCard customer={customer} />
-            </div>
+            />
           ))}
         </div>
-      </div>
-
-      {/* Indicators */}
-      <div className="mt-10 flex justify-center gap-2">
-        {reviews.map((customer, index) => (
-          <button
-            key={customer.name}
-            type="button"
-            aria-label={`Show review ${index + 1}`}
-            aria-current={activeIndex === index ? "true" : undefined}
-            onClick={() => setActiveIndex(index)}
-            className={`review-indicator ${
-              activeIndex === index ? "is-active" : ""
-            }`}
-          />
-        ))}
       </div>
     </section>
   );

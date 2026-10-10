@@ -19,116 +19,17 @@
 }
 
 
-
-
-/* Customer review carousel viewport */
-.review-carousel {
+/* Remove default browser spacing */
+html,
+body,
+#root {
   width: 100%;
-  overflow: hidden;
-  padding: 22px 0;
-}
-
-/* Moving track */
-.review-carousel-track {
-  display: flex;
-  align-items: center;
-  width: max-content;
-  will-change: transform;
-  transition: transform 850ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/* Each slide */
-.review-carousel-item {
-  width: 380px;
-  flex: 0 0 380px;
-  padding: 0 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transform: scale(0.88);
-  opacity: 0.62;
-  transition:
-    transform 850ms cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 850ms ease;
-}
-
-/* Center card */
-.review-carousel-item.is-active {
-  transform: scale(1);
-  opacity: 1;
-  z-index: 2;
-}
-
-/* Card appearance */
-.review-card {
-  width: 100%;
-  height: 180px;
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  border: 1px solid rgb(0 191 131 / 15%);
-  border-radius: 16px;
-  box-shadow: 0 5px 16px rgb(0 0 0 / 6%);
-  transition:
-    box-shadow 500ms ease,
-    border-color 500ms ease;
-}
-
-/* Highlight the active card */
-.review-carousel-item.is-active .review-card {
-  border-color: rgb(0 191 131 / 55%);
-  box-shadow:
-    0 12px 30px rgb(0 191 131 / 16%),
-    0 0 0 1px rgb(0 191 131 / 8%);
-}
-
-/* Indicators */
-.review-indicator {
-  width: 9px;
-  height: 9px;
+  min-height: 100%;
+  margin: 0;
   padding: 0;
-  border: none;
-  border-radius: 999px;
-  background: rgb(128 128 128 / 35%);
-  cursor: pointer;
-  transition:
-    width 300ms ease,
-    background-color 300ms ease;
 }
 
-.review-indicator.is-active {
-  width: 28px;
-  background: #00bf83;
-}
 
-/* Tablet and desktop */
-@media (min-width: 640px) {
-  .review-carousel-item {
-    width: 420px;
-    flex-basis: 420px;
-  }
-}
 
-/* Mobile */
-@media (max-width: 420px) {
-  .review-carousel-item {
-    width: 88vw;
-    flex-basis: 88vw;
-    padding: 0 8px;
-  }
 
-  .review-card {
-    height: 190px;
-    padding: 16px;
-  }
-}
 
-/* Accessibility */
-@media (prefers-reduced-motion: reduce) {
-  .review-carousel-track,
-  .review-carousel-item,
-  .review-card,
-  .review-indicator {
-    transition: none;
-  }
-}

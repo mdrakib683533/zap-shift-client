@@ -92,7 +92,7 @@ const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-100 bg-white/95 shadow-sm backdrop-blur-md">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="navbar min-h-[76px] px-0">
           {/* Logo and Mobile Menu */}
           <div className="navbar-start gap-2">
@@ -127,14 +127,13 @@ const Navbar = () => {
               </ul>
             </div>
 
-            <Link
-              to="/"
+            <div
               onClick={() => window.scrollTo(0, 0)}
               aria-label="Zap Shift home"
-              className="flex items-center"
+              className="flex items-center cursor-pointer"
             >
               <ProFastLogo />
-            </Link>
+            </div>
           </div>
 
           {/* Desktop Navigation */}
