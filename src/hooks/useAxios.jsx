@@ -1,8 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL:
-    "https://zap-shift-server-fnrucb1rz-mdrakib683533s-projects.vercel.app",
+  baseURL: "https://zap-shift-server-two-chi.vercel.app",
 });
 
 const useAxios = () => {
