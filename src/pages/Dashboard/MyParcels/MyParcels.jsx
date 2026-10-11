@@ -21,7 +21,25 @@ const MyParcels = () => {
   console.log(parcels);
 
   const handleView = (id) => {
-    console.log("View parcel ID:", id);
+    const parcel = parcels.find((item) => item._id === id);
+
+    if (!parcel) return;
+
+    Swal.fire({
+      title: "Parcel Details",
+      html: `
+      <div style="text-align: left; font-size: 14px; line-height: 2; overflow-wrap: anywhere;">
+        <p><strong>Name:</strong> ${parcel.parcelName || "N/A"}</p>
+        <p><strong>Tracking ID:</strong> ${parcel.trackingId || "N/A"}</p>
+        <p><strong>Cost:</strong> ৳${parcel.deliveryCost ?? "N/A"}</p>
+        <p><strong>Payment:</strong> ${parcel.payment_status || "N/A"}</p>
+        <p><strong>Delivery:</strong> ${parcel.delivery_status || "N/A"}</p>
+      </div>
+    `,
+      confirmButtonText: "Close",
+      confirmButtonColor: "#00BF83",
+      width: "min(420px, 95%)",
+    });
   };
 
   const handlePay = (id) => {
