@@ -207,37 +207,37 @@ const PendingRiders = () => {
 
             <div className="space-y-3 text-sm sm:text-base">
               <p className="break-words">
-                <span className="font-semibold">Name:</span>{" "}
+                <span className="font-bold">Name:</span>{" "}
                 {selectedRider.name || "N/A"}
               </p>
 
               <p className="break-all">
-                <span className="font-semibold">Email:</span>{" "}
+                <span className="font-bold">Email:</span>{" "}
                 {selectedRider.email || "N/A"}
               </p>
 
               <p className="break-words">
-                <span className="font-semibold">Phone:</span>{" "}
+                <span className="font-bold">Phone:</span>{" "}
                 {selectedRider.phone || "N/A"}
               </p>
 
               <p className="break-words">
-                <span className="font-semibold">Region:</span>{" "}
+                <span className="font-bold">Region:</span>{" "}
                 {selectedRider.region || "N/A"}
               </p>
 
               <p className="break-words">
-                <span className="font-semibold">District:</span>{" "}
+                <span className="font-bold">District:</span>{" "}
                 {selectedRider.district || "N/A"}
               </p>
 
               <p className="break-words">
-                <span className="font-semibold">Status:</span>{" "}
+                <span className="font-bold">Status:</span>{" "}
                 {selectedRider.status || "N/A"}
               </p>
             </div>
 
-            <div className="modal-action">
+            <div className="modal-action bg-[#CAEB66]">
               <button onClick={() => setSelectedRider(null)} className="btn">
                 Close
               </button>
