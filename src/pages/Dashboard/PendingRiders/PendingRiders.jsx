@@ -237,8 +237,8 @@ const PendingRiders = () => {
               </p>
             </div>
 
-            <div className="modal-action bg-[#CAEB66]">
-              <button onClick={() => setSelectedRider(null)} className="btn">
+            <div className="modal-action">
+              <button onClick={() => setSelectedRider(null)} className="btn bg-[#CAEB66]">
                 Close
               </button>
             </div>
