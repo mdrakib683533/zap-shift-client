@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, NavLink } from "react-router";
 import ProFastLogo from "../ProFastLogo/ProFastLogo";
 import useAuth from "../../../hooks/useAuth";
@@ -15,6 +16,7 @@ import {
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = () => {
     logOut()
@@ -70,6 +72,10 @@ const Navbar = () => {
           to={to}
           end={to === "/"}
           onClick={() => {
+            if (mobile) {
+              setIsMenuOpen(false);
+            }
+
             if (to === window.location.pathname) {
               window.scrollTo(0, 0);
             }
@@ -96,12 +102,15 @@ const Navbar = () => {
         <div className="navbar min-h-[76px] px-0">
           {/* Logo and Mobile Menu */}
           <div className="navbar-start gap-2">
-            <div className="dropdown">
+            <div className="relative lg:hidden">
               <button
                 type="button"
-                tabIndex={0}
-                aria-label="Open navigation menu"
-                className="btn btn-ghost btn-circle lg:hidden"
+                aria-label={
+                  isMenuOpen ? "Close navigation menu" : "Open navigation menu"
+                }
+                aria-expanded={isMenuOpen}
+                onClick={() => setIsMenuOpen((prev) => !prev)}
+                className="btn btn-ghost btn-circle"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -119,18 +128,17 @@ const Navbar = () => {
                 </svg>
               </button>
 
-              <ul
-                tabIndex={0}
-                className="menu dropdown-content z-[60] mt-3 w-64 gap-1 rounded-2xl border border-gray-100 bg-white p-3 shadow-xl"
-              >
-                {renderNavLinks(true)}
-              </ul>
+              {isMenuOpen && (
+                <ul className="menu absolute left-0 top-full z-[60] mt-3 w-64 gap-1 rounded-2xl border border-gray-100 bg-white p-3 shadow-xl">
+                  {renderNavLinks(true)}
+                </ul>
+              )}
             </div>
 
             <div
               onClick={() => window.scrollTo(0, 0)}
               aria-label="Zap Shift home"
-              className="flex items-center cursor-pointer"
+              className="flex cursor-pointer items-center"
             >
               <ProFastLogo />
             </div>
