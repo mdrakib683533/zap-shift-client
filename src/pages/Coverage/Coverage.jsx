@@ -1,21 +1,50 @@
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+
+import markerIcon from "leaflet/dist/images/marker-icon.png";
+import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
 import { useLoaderData } from "react-router";
 import { useEffect, useRef, useState } from "react";
 
-// Search korle map ke selected district- er kace niye jabe
-const MapController = ({ selectedCenter }) => {
+// Fix Leaflet default marker icons in production builds
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
+
+// Move the map to the selected district and open its popup
+const MapController = ({ selectedCenter, markerRefs }) => {
   const map = useMap();
 
   useEffect(() => {
-    if (selectedCenter) {
-      map.flyTo([selectedCenter.latitude, selectedCenter.longitude], 10, {
-        duration: 1.5,
+    if (!selectedCenter) return;
+
+    const { latitude, longitude, district } = selectedCenter;
+
+    if (
+      !Number.isFinite(Number(latitude)) ||
+      !Number.isFinite(Number(longitude))
+    ) {
+      return;
+    }
+
+    const marker = markerRefs.current[district];
+
+    map.flyTo([Number(latitude), Number(longitude)], 10, { duration: 1.5 });
+
+    if (marker) {
+      map.once("moveend", () => {
+        marker.openPopup();
       });
     }
-  }, [selectedCenter, map]);
+  }, [selectedCenter, map, markerRefs]);
 
   return null;
 };
@@ -30,12 +59,12 @@ const Coverage = () => {
 
   const bangladeshCenter = [23.685, 90.3563];
 
-  // Search input unujai district filter
+  // Filter districts while typing
   const filteredCenters = serviceCenters.filter((center) =>
-    center.district.toLowerCase().includes(searchText.toLowerCase()),
+    center.district?.toLowerCase().includes(searchText.trim().toLowerCase()),
   );
 
-  // Search button click
+  // Find the district and move the map to its marker
   const handleSearch = () => {
     const search = searchText.trim().toLowerCase();
 
@@ -45,95 +74,95 @@ const Coverage = () => {
     }
 
     const foundDistrict = serviceCenters.find((center) =>
-      center.district.toLowerCase().includes(search),
+      center.district?.toLowerCase().includes(search),
     );
 
     if (foundDistrict) {
       setSelectedCenter(foundDistrict);
-
-      // sei marker-er Popup open korbe
-      setTimeout(() => {
-        const marker = markerRefs.current[foundDistrict.district];
-
-        if (marker) {
-          marker.openPopup();
-        }
-      }, 100);
     } else {
+      setSelectedCenter(null);
       alert("District not found!");
     }
   };
 
-  // Enter press korle search hobe
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+  // Search when Enter is pressed
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
       handleSearch();
     }
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-10">
-      {/* Page Title */}
-      <div className="text-center mb-8">
-        <h1 className="text-4xl md:text-5xl font-bold">
+    <section className="mx-auto max-w-7xl px-4 py-10">
+      {/* Page heading */}
+      <div className="mb-8 text-center">
+        <h1 className="text-3xl font-bold sm:text-4xl md:text-5xl">
           We are available in 64 districts
         </h1>
 
-        <p className="text-gray-500 mt-3">
+        <p className="mt-3 text-gray-500">
           Find our delivery coverage across Bangladesh
         </p>
       </div>
 
-      {/* Search Box */}
-      <div className="max-w-xl mx-auto mb-8">
+      {/* District search */}
+      <div className="mx-auto mb-8 max-w-xl">
         <div className="flex gap-2">
           <input
             type="text"
             value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
+            onChange={(event) => setSearchText(event.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Search district..."
-            className="input input-bordered w-full"
+            aria-label="Search district"
+            className="input input-bordered min-w-0 flex-1"
           />
 
-          <button onClick={handleSearch} className="btn btn-primary">
+          <button
+            type="button"
+            onClick={handleSearch}
+            className="btn btn-primary"
+          >
             Search
           </button>
         </div>
 
-        {/* Search Result Count */}
-        {searchText && (
-          <p className="text-sm text-gray-500 mt-2">
-            {filteredCenters.length} district found
+        {searchText.trim() && (
+          <p className="mt-2 text-sm text-gray-500">
+            {filteredCenters.length}{" "}
+            {filteredCenters.length === 1 ? "district" : "districts"} found
           </p>
         )}
       </div>
 
-      {/* Map */}
-      <div className="rounded-2xl overflow-hidden shadow-lg border">
+      {/* Bangladesh coverage map */}
+      <div className="overflow-hidden rounded-2xl border shadow-lg">
         <MapContainer
           center={bangladeshCenter}
           zoom={7}
           scrollWheelZoom={true}
-          className="h-[500px] w-full"
+          className="h-[400px] w-full sm:h-[500px]"
         >
-          {/* OpenStreetMap */}
           <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
-          {/* Map Controller */}
-          <MapController selectedCenter={selectedCenter} />
+          <MapController
+            selectedCenter={selectedCenter}
+            markerRefs={markerRefs}
+          />
 
-          {/* 64 District Markers */}
-          {serviceCenters.map((center, index) => (
+          {/* District markers */}
+          {serviceCenters.map((center) => (
             <Marker
-              key={index}
-              position={[center.latitude, center.longitude]}
+              key={center.district}
+              position={[Number(center.latitude), Number(center.longitude)]}
               ref={(marker) => {
                 if (marker) {
                   markerRefs.current[center.district] = marker;
+                } else {
+                  delete markerRefs.current[center.district];
                 }
               }}
             >
@@ -141,20 +170,22 @@ const Coverage = () => {
                 <div className="min-w-[180px]">
                   <h3 className="text-lg font-bold">{center.district}</h3>
 
-                  <p className="text-sm mt-1">Delivery Service Available</p>
+                  <p className="mt-1 text-sm">Delivery Service Available</p>
 
-                  <p className="text-sm mt-2">
-                    <strong>Covered Areas:</strong>
+                  <p className="mt-2 text-sm font-semibold">Covered Areas:</p>
+
+                  <p className="text-sm">
+                    {Array.isArray(center.covered_area)
+                      ? center.covered_area.join(", ")
+                      : center.covered_area || "No areas listed"}
                   </p>
-
-                  <p className="text-sm">{center.covered_area.join(", ")}</p>
                 </div>
               </Popup>
             </Marker>
           ))}
         </MapContainer>
       </div>
-    </div>
+    </section>
   );
 };
 
