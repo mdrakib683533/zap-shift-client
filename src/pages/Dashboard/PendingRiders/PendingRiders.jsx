@@ -21,10 +21,6 @@ const PendingRiders = () => {
     },
   });
 
-  if (isPending) {
-    return <p className="p-4">Loading...</p>;
-  }
-
   // Approve rider
   const handleApprove = (id) => {
     Swal.fire({
@@ -99,6 +95,10 @@ const PendingRiders = () => {
     });
   };
 
+  if (isPending) {
+    return <p className="p-4">Loading...</p>;
+  }
+
   return (
     <div className="min-w-0 w-full overflow-x-hidden p-2 sm:p-4">
       <h2 className="mb-6 text-2xl font-bold sm:text-3xl">Pending Riders</h2>
@@ -152,7 +152,6 @@ const PendingRiders = () => {
 
                 <td>
                   <div className="flex flex-row items-center gap-1 sm:gap-2">
-                    {/* View button: icon on mobile */}
                     <button
                       onClick={() => setSelectedRider(rider)}
                       className="btn btn-xs btn-info sm:btn-sm"
@@ -163,7 +162,6 @@ const PendingRiders = () => {
                       <span className="hidden sm:inline">View</span>
                     </button>
 
-                    {/* Approve button: icon on mobile */}
                     <button
                       onClick={() => handleApprove(rider._id)}
                       className="btn btn-xs btn-success sm:btn-sm"
@@ -174,7 +172,6 @@ const PendingRiders = () => {
                       <span className="hidden sm:inline">Approve</span>
                     </button>
 
-                    {/* Cancel button: icon on mobile */}
                     <button
                       onClick={() => handleCancel(rider._id)}
                       className="btn btn-xs btn-error sm:btn-sm"
@@ -200,78 +197,43 @@ const PendingRiders = () => {
         </table>
       </div>
 
-      {/* Rider information modal */}
+      {/* Responsive rider information modal: 6 important fields */}
       {selectedRider && (
         <dialog open className="modal">
-          <div className="modal-box max-h-[90vh] max-w-2xl overflow-y-auto">
-            <h3 className="mb-5 text-2xl font-bold">Rider Information</h3>
+          <div className="modal-box max-h-[85vh] w-[95%] max-w-md overflow-y-auto">
+            <h3 className="mb-5 text-xl font-bold sm:text-2xl">
+              Rider Information
+            </h3>
 
-            <div className="grid grid-cols-1 gap-4 break-words sm:grid-cols-2">
-              <p>
+            <div className="space-y-3 text-sm sm:text-base">
+              <p className="break-words">
                 <span className="font-semibold">Name:</span>{" "}
-                {selectedRider.name}
+                {selectedRider.name || "N/A"}
               </p>
 
-              <p>
+              <p className="break-all">
                 <span className="font-semibold">Email:</span>{" "}
-                {selectedRider.email}
+                {selectedRider.email || "N/A"}
               </p>
 
-              <p>
-                <span className="font-semibold">Age:</span> {selectedRider.age}
-              </p>
-
-              <p>
+              <p className="break-words">
                 <span className="font-semibold">Phone:</span>{" "}
-                {selectedRider.phone}
+                {selectedRider.phone || "N/A"}
               </p>
 
-              <p>
+              <p className="break-words">
                 <span className="font-semibold">Region:</span>{" "}
-                {selectedRider.region}
+                {selectedRider.region || "N/A"}
               </p>
 
-              <p>
+              <p className="break-words">
                 <span className="font-semibold">District:</span>{" "}
-                {selectedRider.district}
+                {selectedRider.district || "N/A"}
               </p>
 
-              <p>
-                <span className="font-semibold">National ID:</span>{" "}
-                {selectedRider.nid}
-              </p>
-
-              <p>
-                <span className="font-semibold">Bike Brand:</span>{" "}
-                {selectedRider.bikeBrand}
-              </p>
-
-              <p>
-                <span className="font-semibold">Bike Registration:</span>{" "}
-                {selectedRider.bikeRegistrationNumber}
-              </p>
-
-              <p>
+              <p className="break-words">
                 <span className="font-semibold">Status:</span>{" "}
-                {selectedRider.status}
-              </p>
-
-              <p>
-                <span className="font-semibold">Applied At:</span>{" "}
-                {selectedRider.appliedAt
-                  ? new Date(selectedRider.appliedAt).toLocaleString("en-BD", {
-                      dateStyle: "medium",
-                      timeStyle: "short",
-                    })
-                  : "N/A"}
-              </p>
-            </div>
-
-            <div className="mt-5 break-words">
-              <p className="mb-2 font-semibold">Other Information:</p>
-
-              <p className="rounded-lg bg-base-200 p-4">
-                {selectedRider.additionalInfo || "No additional information"}
+                {selectedRider.status || "N/A"}
               </p>
             </div>
 
