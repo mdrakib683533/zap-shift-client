@@ -15,6 +15,7 @@ const PaymentForm = () => {
   const navigate = useNavigate();
 
   const [error, setError] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const { isPending, data: parcelInfo = {} } = useQuery({
     queryKey: ["parcels", parcelId],
@@ -23,49 +24,58 @@ const PaymentForm = () => {
       return res.data;
     },
   });
+
   if (isPending) {
-    return "loading....";
+    return <p className="text-center py-10">Loading parcel...</p>;
   }
 
-  console.log(parcelInfo);
   const amount = parcelInfo.deliveryCost;
-  const amountInCents = amount * 100;
-  console.log(amountInCents);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Prevent repeated clicks while payment is processing
+    if (isProcessing) return;
+
     if (!stripe || !elements) {
+      setError("Payment system is not ready. Please try again.");
       return;
     }
 
     const card = elements.getElement(CardElement);
+
     if (!card) {
+      setError("Card information is missing.");
       return;
     }
 
-    // step-1: validate the card
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: "card",
-      card,
-    });
-    if (error) {
-      setError(error.message);
-    } else {
-      setError("");
-      console.log("payment method", paymentMethod);
+    // Disable the button immediately
+    setIsProcessing(true);
+    setError("");
 
-      // step-2: create payment intent
+    try {
+      // Step 1: Validate card details
+      const { error: cardError } = await stripe.createPaymentMethod({
+        type: "card",
+        card,
+      });
+
+      if (cardError) {
+        setError(cardError.message);
+        return;
+      }
+
+      // Step 2: Create PaymentIntent
       const res = await axiosSecure.post("/create-payment-intent", {
-        amountInCents,
         parcelId,
       });
 
       const clientSecret = res.data.clientSecret;
 
-      // step-3: Confirm payment method
+      // Step 3: Confirm payment
       const result = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
-          card: elements.getElement(CardElement),
+          card,
           billing_details: {
             name: user.displayName,
             email: user.email,
@@ -75,42 +85,50 @@ const PaymentForm = () => {
 
       if (result.error) {
         setError(result.error.message);
-      } else {
-        setError("");
-        if (result.paymentIntent.status === "succeeded") {
-          console.log("payment succeeded");
-          const transactionId = result.paymentIntent.id;
+        return;
+      }
 
-          // step-4: mark parcel paid also create payment history.
-          const paymentData = {
-            parcelId,
-            userEmail: user.email,
-            amount,
-            transactionId: transactionId,
-            paymentMethod: "card",
-          };
-          const paymentRes = await axiosSecure.post("/payments", paymentData);
-          console.log("Payment API response:", paymentRes.data);
-          if (paymentRes.data.paymentId) {
-            // show sweetalert with transaction ID
-            Swal.fire({
-              icon: "success",
-              title: "Payment Successful!",
-              html: `
-        <p>Your payment has been completed successfully.</p>
-        <p class="mt-3"><strong>Transaction ID:</strong></p>
-        <p class="text-sm break-all">${transactionId}</p>
-      `,
-              confirmButtonText: "Go to My Parcels",
-            }).then((result) => {
-              if (result.isConfirmed) {
-                // redirect to myParcels
-                navigate("/dashboard/myParcels");
-              }
-            });
-          }
+      if (result.paymentIntent.status === "succeeded") {
+        const transactionId = result.paymentIntent.id;
+
+        // Step 4: Verify payment and save payment history
+        const paymentData = {
+          parcelId,
+          userEmail: user.email,
+          amount,
+          transactionId,
+          paymentMethod: "card",
+        };
+
+        const paymentRes = await axiosSecure.post("/payments", paymentData);
+
+        if (paymentRes.data.success) {
+          Swal.fire({
+            icon: "success",
+            title: "Payment Successful!",
+            html: `
+              <p>Your payment has been completed successfully.</p>
+              <p class="mt-3"><strong>Transaction ID:</strong></p>
+              <p class="text-sm break-all">${transactionId}</p>
+            `,
+            confirmButtonText: "Go to My Parcels",
+            allowOutsideClick: false,
+          }).then((result) => {
+            if (result.isConfirmed) {
+              navigate("/dashboard/myParcels");
+            }
+          });
         }
       }
+    } catch (err) {
+      console.error("Payment error:", err);
+
+      setError(
+        err.response?.data?.message || "Payment failed. Please try again.",
+      );
+    } finally {
+      // Re-enable the button after success or failure
+      setIsProcessing(false);
     }
   };
 
@@ -120,14 +138,23 @@ const PaymentForm = () => {
         onSubmit={handleSubmit}
         className="space-y-4 bg-white p-6 rounded-xl shadow-md w-full max-w-md mx-auto"
       >
-        <CardElement className="p-2 border rounded"></CardElement>
+        <CardElement className="p-2 border rounded" />
+
         <button
           type="submit"
-          className="btn w-full bg-[#B8D469] hover:bg-[#A6C45B]"
-          disabled={!stripe}
+          className="btn w-full bg-[#B8D469] hover:bg-[#A6C45B] disabled:opacity-60 disabled:cursor-not-allowed"
+          disabled={!stripe || isProcessing}
         >
-          Pay ${amount}
+          {isProcessing ? (
+            <>
+              <span className="loading loading-spinner loading-sm"></span>
+              Processing Payment...
+            </>
+          ) : (
+            `Pay $${amount}`
+          )}
         </button>
+
         {error && <p className="text-red-500">{error}</p>}
       </form>
     </div>
